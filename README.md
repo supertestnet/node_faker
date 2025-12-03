@@ -40,4 +40,6 @@ For getblock, these additional caveats apply:
 
 For getblockheader, these additional caveats apply: chainwork is always unknown, and the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
 
+For gettxout, this app will throw an error if you set the `include_mempool` parameter, because I haven't modified the app yet to display proper values when a utxo is only created in the mempool and isn't confirmed yet
+
 For getrawtransaction, these additional caveats apply: verbosity cannot be set to 2 or higher, and if a blockhash is passed as a third parameter, it is always ignored
