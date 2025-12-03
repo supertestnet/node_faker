@@ -24,19 +24,20 @@ For now, the app only supports some bitcoin-cli commands, namely, these ones:
 - gettxout
 - getrawtransaction
 
-For getblockchaininfo, these additional caveats apply: chainwork is always unknown, size_on_disk is always unknown, verificationprogress is always 1, initialblockdownload is always false, "pruned" is always false, "warnings" is always an empty array, and "chain" is always mainnet.
+For getblockchaininfo, these additional caveats apply: chainwork is always unknown, size_on_disk is always unknown, verificationprogress is always 1, initialblockdownload is always false, "pruned" is always false, "warnings" is always an empty array, and "chain" is always mainnet. Also, the "difficulty" parameter does not match the difficulty integer provided by bitcoin core, and I don't know why.
 
 For getblock, these additional caveats apply:
 
 - chainwork is always unknown
 - also, when the "verbose" option is set to 2 or more, all transactions in the block are represented in a format similar to Core's, with the following exceptions:
-- sometimes, for inputs, Core provides a prevout object, though I don’t understand what triggers that (I suspect it might do it only when the utxo came from its own wallet), so my format just never does that at all
-- in scriptSigs, witnesses, and output scripts, Core has an ASM format that I don’t perfectly emulate; I use taprootjs’s ASM format instead, after applying the “join” operator; this is pretty close to Core’s ASM format, but it’s not identical
-- in particular, for signatures that have a sigflag appended, Core’s format changes the sigflag from its hex value to a corresponding marker such as: `[ALL],` whereas taprootjs just keeps the hex value, e.g. `01`
+- sometimes, for inputs, Core provides a prevout object, though I don't understand what triggers that (I suspect it might do it only when the utxo came from its own wallet), so my format just never does that at all
+- in scriptSigs, witnesses, and output scripts, Core has an ASM format that I don't perfectly emulate; I use taprootjs's ASM format instead, after applying the "join" operator; this is pretty close to Core's ASM format, but it's not identical
+- in particular, for signatures that have a sigflag appended, Core's format changes the sigflag from its hex value to a corresponding marker such as: `[ALL],` whereas taprootjs just keeps the hex value, e.g. `01`
 - when displaying the value of a utxo, Core uses an integer format that allows for trailing zeroes; thus it might look like this: `"value": 0.21000000,` – whereas my format does not display trailing zeroes; e.g. my format would display that like this: `"value": 0.21,`
 - in outputs, my format makes no attempt to replicate the descriptor, and for everything it says `"desc": "unknown",`
 - four of the output types supported by Core (i.e. pubkey, multisig, witness_unknown, and nonstandard) do not get their output type displayed properly in my format; instead I just say `"type": "unknown",` for those, and only support the seven most common ones, namely, pubkeyhash, scripthash, witness_v0_keyhash, witness_v0_scripthash, witness_v1_taproot, anchor, and nulldata
+- the "difficulty" parameter does not match the difficulty integer provided by bitcoin core, and I don't know why
 
-For getblockheader, these additional caveats apply: chainwork is always unknown
+For getblockheader, these additional caveats apply: chainwork is always unknown, and the "difficulty" parameter does not match the difficulty integer provided by bitcoin core, and I don't know why.
 
 For getrawtransaction, these additional caveats apply: verbosity cannot be set to 2 or higher, and if a blockhash is passed as a third parameter, it is always ignored
