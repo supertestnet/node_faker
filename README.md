@@ -29,7 +29,7 @@ For getblockchaininfo, these additional caveats apply: chainwork is always unkno
 For getblock, these additional caveats apply:
 
 - chainwork is always unknown
-- also, when the "verbose" option is set to 2 or more, all transactions in the block are represented in a format similar to Core's, with the following exceptions:
+- when the "verbose" option is set to 2 or more, all transactions in the block are represented in a format similar to Core's, with the following exceptions:
 - sometimes, for inputs, Core provides a prevout object, though I don't understand what triggers that (I suspect it might do it only when the utxo came from its own wallet), so my format just never does that at all
 - in scriptSigs, witnesses, and output scripts, Core has an ASM format that I don't perfectly emulate; I use taprootjs's ASM format instead, after applying the "join" operator; this is pretty close to Core's ASM format, but it's not identical
 - in particular, for signatures that have a sigflag appended, Core's format changes the sigflag from its hex value to a corresponding marker such as: `[ALL],` whereas taprootjs just keeps the hex value, e.g. `01`
