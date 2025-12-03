@@ -4,99 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, user-scalable=no">
         <script src="https://unpkg.com/@cmdcode/tapscript@1.5.3"></script>
-        <title>Node Faker</title>
-        <style>
-            * {
-                box-sizing: border-box;
-                font-size: 1.15rem;
-                font-family: Arial, sans-serif;
-            }
-            html {
-                max-width: 800px;
-                padding: 3rem 1rem;
-                margin: auto;
-                line-height: 1.25;
-                padding: 0;
-            }
-            body {
-                margin: 3rem 1rem;
-                word-wrap: break-word;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            h2 {
-                font-size: 1.5rem;
-            }
-            input, textarea {
-                line-height: 1.25;
-                width: 100%;
-                height: 1.8rem;
-                font-size: 1.15rem;
-                border: 1px solid grey;
-            }
-            textarea {
-                height: 5rem;
-            }
-            .hidden {
-                display: none !important;
-            }
-            .supported_commands {
-                border: 1px solid black;
-                border-radius: 1rem;
-                padding: 1rem;
-            }
-            .response {
-                padding: 1rem;
-                background-color: #bbb;
-                font-family: monospace;
-                white-space: pre;
-                overflow-x: scroll;
-            }
-            @media screen and (max-width: 600px) {
-            }
-        </style>
         <script>
-            var $ = document.querySelector.bind( document );
-            var $$ = document.querySelectorAll.bind( document );
-            var url_params = new URLSearchParams( window.location.search );
-            var url_keys = url_params.keys();
-            var $_GET = {}
-            for ( var key of url_keys ) $_GET[ key ] = url_params.get( key );
-            var hash_arr = window.location.href.substring( window.location.href.indexOf( "#" ) ).split( "#" );
-            hash_arr.splice( 0, 1 );
-            var $_HASH = {}
-            hash_arr.forEach( item => {
-                var vals = item.split( "=" );
-                $_HASH[ vals[ 0 ] ] = vals[ 1 ];
-            });
-        </script>
-    </head>
-    <body>
-        <h1>Welcome to Node Faker</h1>
-        <p>Enter a bitcoin-cli command</p>
-        <p><textarea class="command" placeholder="bitcoin-cli getblockchaininfo"></textarea></p>
-        <p><button class="submit_command_btn">Submit</button></p>
-        <p><button class="list_supported_commands">List supported commands</button></p>
-        <div class="supported_commands hidden">
-            <ul>
-                <li>getbestblockhash</li>
-                <li>getblock</li>
-                <li>getblockchaininfo</li>
-                <li>getblockcount</li>
-                <li>getblockhash</li>
-                <li>getblockheader</li>
-                <li>getrawtransaction</li>
-                <li>gettxout</li>
-            </ul>
-        </div>
-        <p>Response:</p>
-        <p class="response">None yet</p>
-        <script>
-            $( '.list_supported_commands' ).onclick = () => {
-                if ( !$( '.supported_commands' ).classList.contains( "hidden" ) ) $( '.supported_commands' ).classList.add( "hidden" );
-                else $( '.supported_commands' ).classList.remove( "hidden" );
-            }
             var node_faker = {
                 getRand: num_of_bytes => window.crypto.getRandomValues( new Uint8Array( num_of_bytes ) ).toHex(),
                 waitSomeTime: num => new Promise( resolve => setTimeout( resolve, num ) ),
@@ -779,6 +687,100 @@
                     return Number( btc );
                 },
                 bitcoinToSats: btc => Math.floor( btc * 100_000_000 ),
+            }
+        </script>
+        <title>Node Faker</title>
+        <style>
+            * {
+                box-sizing: border-box;
+                font-size: 1.15rem;
+                font-family: Arial, sans-serif;
+            }
+            html {
+                max-width: 800px;
+                padding: 3rem 1rem;
+                margin: auto;
+                line-height: 1.25;
+                padding: 0;
+            }
+            body {
+                margin: 3rem 1rem;
+                word-wrap: break-word;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            input, textarea {
+                line-height: 1.25;
+                width: 100%;
+                height: 1.8rem;
+                font-size: 1.15rem;
+                border: 1px solid grey;
+            }
+            textarea {
+                height: 5rem;
+            }
+            .hidden {
+                display: none !important;
+            }
+            .supported_commands {
+                border: 1px solid black;
+                border-radius: 1rem;
+                padding: 1rem;
+            }
+            .response {
+                padding: 1rem;
+                background-color: #bbb;
+                font-family: monospace;
+                white-space: pre;
+                overflow-x: scroll;
+            }
+            @media screen and (max-width: 600px) {
+            }
+        </style>
+        <script>
+            var $ = document.querySelector.bind( document );
+            var $$ = document.querySelectorAll.bind( document );
+            var url_params = new URLSearchParams( window.location.search );
+            var url_keys = url_params.keys();
+            var $_GET = {}
+            for ( var key of url_keys ) $_GET[ key ] = url_params.get( key );
+            var hash_arr = window.location.href.substring( window.location.href.indexOf( "#" ) ).split( "#" );
+            hash_arr.splice( 0, 1 );
+            var $_HASH = {}
+            hash_arr.forEach( item => {
+                var vals = item.split( "=" );
+                $_HASH[ vals[ 0 ] ] = vals[ 1 ];
+            });
+        </script>
+    </head>
+    <body>
+        <h1>Welcome to Node Faker</h1>
+        <p>Enter a bitcoin-cli command</p>
+        <p><textarea class="command" placeholder="bitcoin-cli getblockchaininfo"></textarea></p>
+        <p><button class="submit_command_btn">Submit</button></p>
+        <p><button class="list_supported_commands">List supported commands</button></p>
+        <div class="supported_commands hidden">
+            <ul>
+                <li>getbestblockhash</li>
+                <li>getblock</li>
+                <li>getblockchaininfo</li>
+                <li>getblockcount</li>
+                <li>getblockhash</li>
+                <li>getblockheader</li>
+                <li>getrawtransaction</li>
+                <li>gettxout</li>
+            </ul>
+        </div>
+        <p>Response:</p>
+        <p class="response">None yet</p>
+        <script>
+            $( '.list_supported_commands' ).onclick = () => {
+                if ( !$( '.supported_commands' ).classList.contains( "hidden" ) ) $( '.supported_commands' ).classList.add( "hidden" );
+                else $( '.supported_commands' ).classList.remove( "hidden" );
             }
             $( '.submit_command_btn' ).onclick = async () => {
                 var command = $( '.command' ).value;
