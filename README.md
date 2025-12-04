@@ -54,8 +54,8 @@ For sendrawtransaction, these additional caveats apply: if the ( allowhighfees )
 - Implement getpeerinfo
 - Implement getnetworkinfo
 - Implement validateaddress
-- Find out what parts of getchaintxstats spruned imlemented and implement those
-- Find out what parts of getmininginfo spruned imlemented and implement those
-- Find out what parts of getnettotals spruned imlemented and implement those
+- Find out what parts of getchaintxstats spruned implemented and implement those
+- Find out what parts of getmininginfo spruned implemented and implement those
+- Find out what parts of getnettotals spruned implemented and implement those
 - Find out why spruned implemented optional support for getmempoolinfo, and if it is needed, try to do something similar to what they did
 - Find out why spruned implemented optional support for getrawmempool, and if it is needed, try to do something similar to what they did
