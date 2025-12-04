@@ -582,10 +582,6 @@
                             var txhash = command_arr[ 1 ];
                             txhash = txhash.replaceAll( '"', "" ).replaceAll( "'", "" );
                             var vout = command_arr[ 2 ];
-                            if ( command_arr[ 3 ] ) {
-                                node_faker.status = "";
-                                return `error: the gettxout method in this implementation must not have an "include_mempool" parameter because this implementation does not support the mempool yet`;
-                            }
                             if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             //get the txhex
@@ -597,7 +593,7 @@
                             var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
                             response_from_server = JSON.parse( response_from_server );
                             var txdata = response_from_server.result;
-                            var confirmations = txdata.confirmations;
+                            var confirmations = txdata.confirmations || 0;
 
                             //get the best block header
                             var formatted_command = {
@@ -616,6 +612,10 @@
 
                             //return the requested data
                             node_faker.status = "";
+                            if ( command_arr[ 3 ] === "false" && !confirmations ) {
+                                node_faker.status = "";
+                                return "null";
+                            }
                             return {
                                 "bestblock": bestblock,
                                 "confirmations": confirmations,
