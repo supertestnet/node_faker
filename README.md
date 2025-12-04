@@ -31,6 +31,7 @@ Also, the app only supports some bitcoin-cli commands for now; namely, these one
 - estimatefee nblocks
 - estimatesmartfee conf_target ( "estimate_mode" )
 - uptime
+- getpeerinfo
 - getnetworkinfo
 - validateaddress "address"
 - getchaintxstats
@@ -65,11 +66,10 @@ For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a 
 
 For getchaintxstats, the two optional parameters ( nblocks and blockhash ) are ignored, as the parts of this function that I am currently interested in emulating are unaffected by them
 
+For getpeerinfo, it always tries to randomly select 5 nodes from Peter Todd's DNS seed list and then pretends it's had a connection with each one for the last 2 hours (12 blocks)
+
 For getnetworkinfo, connections are always 0 and "warnings" is always an array containing one value that just says node faker is emulating bitcoind and has incomplete data
 
 For getmempoolinfo, the app always returns info about an empty mempool, just as if bitcoin core is running in blocksonly mode
 
 For getrawmempool, the app always returns an empty array, just as if bitcoin core is running in blocksonly mode
-
-# Next steps
-- Implement getpeerinfo
