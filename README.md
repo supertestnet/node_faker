@@ -28,6 +28,8 @@ Also, the app only supports some bitcoin-cli commands for now; namely, these one
 - getrawtransaction "txid" ( verbose )
 - gettxout "txid" n ( include_mempool )
 - sendrawtransaction "hexstring"
+- estimatefee nblocks
+- estimatesmartfee conf_target ( "estimate_mode" )
 
 # Command-specific caveats
 
@@ -50,6 +52,8 @@ For getblockheader, these additional caveats apply: chainwork is always unknown,
 For getrawtransaction, these additional caveats apply: if a blockhash is passed as a third parameter, it is always ignored, because it doesn't affect the output anyway (it's just meant to make bitcoin core more efficient) and electrum servers don't seem to have an endpoint for passing that parameter to them anyway; also, prevout objects and txfee data are always omitted from the transaction and its inputs, even if verbosity is set higher than 1, because Core omits them too whenever "block undo data" is not available, and as mentioned previously, I don't know what that is, but I can see I'm allowed to omit it (because Core sometimes omits it) so I'm just always omitting it
 
 For sendrawtransaction, these additional caveats apply: if the ( allowhighfees ) parameter is passed, it is ignored because electrum servers don't have an endpoint for passing this parameter
+
+For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a second parameter ("estimate_mode") just adds 3 blocks to whatever conf_target you passed, rather than doing the complicated evaluations done by bitcoin core
 
 # Next steps
 - Implement estimatefee nblocks
