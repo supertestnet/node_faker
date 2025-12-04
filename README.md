@@ -20,7 +20,7 @@ Also, I used to use a project called [spruned](https://github.com/gdassori/sprun
 - Enter that directory and run `npm init -y`
 - Install the dependencies: `npm i ws @cmdcode/tapscript`
 - Download the index.js file and put it in your node_faker directory (or whatever you called it)
-- Run the app with node index.js
+- Run the app with `node index.js`
 - Voila! You can interact with it using bitcoin-cli -- if you're okay with the fact that a lot of commands don't work
 
 # General caveats
