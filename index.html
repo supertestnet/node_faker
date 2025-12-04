@@ -311,7 +311,7 @@
                                 "chainwork": "0".repeat( 64 ),
                                 "size_on_disk": "unknown",
                                 "pruned": false,
-                                "warnings": ["node faker, emulating bitcoind, incomplete data"],
+                                "warnings": [ "node faker, emulating bitcoind, incomplete data" ],
                             }
                         }
                         if ( command === "getblock" ) {
@@ -730,6 +730,52 @@
                             node_faker.status = "";
                             return node_faker.uptime;
                         }
+                        if ( command === "getnetworkinfo" ) {
+                            node_faker.status = "";
+                            return {
+                                "version": 150100,
+                                "subversion": "/node faker/",
+                                "protocolversion": 70015,
+                                "localservices": "000000000000000d",
+                                "localrelay": false,
+                                "timeoffset": 0,
+                                "networkactive": false,
+                                "connections": 0,
+                                "networks": [
+                                    {
+                                        "name": "ipv4",
+                                        "limited": true,
+                                        "reachable": false,
+                                        "proxy": "",
+                                        "proxy_randomize_credentials": false
+                                    },
+                                    {
+                                        "name": "ipv6",
+                                        "limited": false,
+                                        "reachable": false,
+                                        "proxy": "",
+                                        "proxy_randomize_credentials": false
+                                    },
+                                    {
+                                        "name": "onion",
+                                        "limited": true,
+                                        "reachable": false,
+                                        "proxy": "",
+                                        "proxy_randomize_credentials": false
+                                    }
+                                ],
+                                "relayfee": 0,
+                                "incrementalfee": 0,
+                                "localaddresses": [
+                                    {
+                                        "address": "127.0.0.1",
+                                        "port": 8332,
+                                        "score": 29
+                                    },
+                                ],
+                                "warnings": [ "node faker, emulating bitcoind, incomplete data" ],
+                            }
+                        }
                         if ( command === "validateaddress" ) {
                             var address = command_arr[ 1 ];
                             address = address.replaceAll( '"', "" ).replaceAll( "'", "" );
@@ -825,52 +871,6 @@
                                     "bytes_left_in_cycle": 0,
                                     "time_left_in_cycle": 0
                                 }
-                            }
-                        }
-                        if ( command === "getnetworkinfo" ) {
-                            node_faker.status = "";
-                            return {
-                                "version": 150100,
-                                "subversion": "/node faker/",
-                                "protocolversion": 70015,
-                                "localservices": "000000000000000d",
-                                "localrelay": false,
-                                "timeoffset": 0,
-                                "networkactive": false,
-                                "connections": 0,
-                                "networks": [
-                                    {
-                                        "name": "ipv4",
-                                        "limited": true,
-                                        "reachable": false,
-                                        "proxy": "",
-                                        "proxy_randomize_credentials": false
-                                    },
-                                    {
-                                        "name": "ipv6",
-                                        "limited": false,
-                                        "reachable": false,
-                                        "proxy": "",
-                                        "proxy_randomize_credentials": false
-                                    },
-                                    {
-                                        "name": "onion",
-                                        "limited": true,
-                                        "reachable": false,
-                                        "proxy": "",
-                                        "proxy_randomize_credentials": false
-                                    }
-                                ],
-                                "relayfee": 0,
-                                "incrementalfee": 0,
-                                "localaddresses": [
-                                    {
-                                        "address": "127.0.0.1",
-                                        "port": 8332,
-                                        "score": 29
-                                    },
-                                ],
-                                "warnings": [ "node faker, emulating bitcoind, incomplete data" ],
                             }
                         }
                         node_faker.status = "";
@@ -1075,11 +1075,11 @@
                 <li>estimatefee nblocks</li>
                 <li>estimatesmartfee conf_target ( "estimate_mode" )</li>
                 <li>uptime</li>
+                <li>getnetworkinfo</li>
                 <li>validateaddress "address"</li>
                 <li>getchaintxstats</li>
                 <li>getmininginfo</li>
                 <li>getnettotals</li>
-                <li>getnetworkinfo</li>
             </ul>
         </div>
         <p>Response:</p>
