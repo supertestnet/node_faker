@@ -31,6 +31,7 @@ Also, the app only supports some bitcoin-cli commands for now; namely, these one
 - estimatefee nblocks
 - estimatesmartfee conf_target ( "estimate_mode" )
 - uptime
+- validateaddress "address"
 
 # Command-specific caveats
 
@@ -59,7 +60,6 @@ For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a 
 # Next steps
 - Implement getpeerinfo
 - Implement getnetworkinfo
-- Implement validateaddress
 - Find out what parts of getchaintxstats spruned implemented and implement those
 - Find out what parts of getmininginfo spruned implemented and implement those
 - Find out what parts of getnettotals spruned implemented and implement those
