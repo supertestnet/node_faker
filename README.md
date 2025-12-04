@@ -32,6 +32,7 @@ Also, the app only supports some bitcoin-cli commands for now; namely, these one
 - estimatesmartfee conf_target ( "estimate_mode" )
 - uptime
 - validateaddress "address"
+- getnettotals
 
 # Command-specific caveats
 
@@ -62,6 +63,5 @@ For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a 
 - Implement getnetworkinfo
 - Find out what parts of getchaintxstats spruned implemented and implement those
 - Find out what parts of getmininginfo spruned implemented and implement those
-- Find out what parts of getnettotals spruned implemented and implement those
 - Find out why spruned implemented optional support for getmempoolinfo, and if it is needed, try to do something similar to what they did
 - Find out why spruned implemented optional support for getrawmempool, and if it is needed, try to do something similar to what they did
