@@ -50,7 +50,10 @@
                 queryElectrumServer: async ( socket, json ) => {
                     if ( !json ) return 'you forgot to include a command';
                     return new Promise( async resolve => {
-                        var handleFunction = async message => resolve( message.data );
+                        var handleFunction = async message => {
+                            resolve( message.data );
+                            socket.removeEventListener( 'message', handleFunction );
+                        }
                         socket.addEventListener( 'message', handleFunction );
                         socket.send( JSON.stringify( json ) );
                     });
