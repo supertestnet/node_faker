@@ -873,6 +873,26 @@
                                 }
                             }
                         }
+                        if ( command === "getmempoolinfo" ) {
+                            node_faker.status = "";
+                            return {
+                                "loaded": true,
+                                "size": 0,
+                                "bytes": 0,
+                                "usage": 0,
+                                "total_fee": 0.00000000,
+                                "maxmempool": 5000000,
+                                "mempoolminfee": 0.00001000,
+                                "minrelaytxfee": 0.00001000,
+                                "incrementalrelayfee": 0.00001000,
+                                "unbroadcastcount": 0,
+                                "fullrbf": true,
+                            }
+                        }
+                        if ( command === "getrawmempool" ) {
+                            node_faker.status = "";
+                            return [];
+                        }
                         node_faker.status = "";
                         return "unknown error";
                     } catch ( e ) {
@@ -1080,6 +1100,8 @@
                 <li>getchaintxstats</li>
                 <li>getmininginfo</li>
                 <li>getnettotals</li>
+                <li>getmempoolinfo</li>
+                <li>getrawmempool</li>
             </ul>
         </div>
         <p>Response:</p>
