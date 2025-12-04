@@ -19,21 +19,27 @@ Also, I used to use a project called [spruned](https://github.com/gdassori/sprun
 
 Also, the app only supports some bitcoin-cli commands for now; namely, these ones:
 
+- --- Blockchain ---
 - getbestblockhash
 - getblock "blockhash" ( verbosity )
 - getblockchaininfo
 - getblockcount
 - getblockhash height
 - getblockheader "blockhash" ( verbose )
-- getrawtransaction "txid" ( verbose )
 - gettxout "txid" n ( include_mempool )
+- --- Raw transactions ---
+- getrawtransaction "txid" ( verbose )
 - sendrawtransaction "hexstring"
+- --- Util ---
 - estimatefee nblocks
 - estimatesmartfee conf_target ( "estimate_mode" )
 - uptime
+- --- Network ---
 - getpeerinfo
 - getnetworkinfo
+- --- Wallet ---
 - validateaddress "address"
+- --- Partially emulated for compatibility ---
 - getchaintxstats
 - getmininginfo
 - getnettotals
