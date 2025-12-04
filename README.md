@@ -56,8 +56,6 @@ For sendrawtransaction, these additional caveats apply: if the ( allowhighfees )
 For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a second parameter ("estimate_mode") just adds 3 blocks to whatever conf_target you passed, rather than doing the complicated evaluations done by bitcoin core
 
 # Next steps
-- Implement estimatefee nblocks
-- Implement estimatesmartfee conf_target ("estimate_mode")
 - Implement uptime
 - Implement getpeerinfo
 - Implement getnetworkinfo
