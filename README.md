@@ -26,8 +26,6 @@ For now, the app only supports some bitcoin-cli commands, namely, these ones:
 - gettxout "txid" n
 - getrawtransaction "txid"
 
-For getblockchaininfo, these additional caveats apply: chainwork is always unknown, size_on_disk is always unknown, verificationprogress is always 1, initialblockdownload is always false, "pruned" is always false, "warnings" is always an empty array, and "chain" is always mainnet. Also, the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
-
 For getblock, these additional caveats apply:
 
 - chainwork is always unknown
@@ -39,6 +37,8 @@ For getblock, these additional caveats apply:
 - in outputs, my format makes no attempt to replicate the descriptor, and for everything it says `"desc": "unknown",`
 - four of the output types supported by Core (i.e. pubkey, multisig, witness_unknown, and nonstandard) do not get their output type displayed properly in my format; instead I just say `"type": "unknown",` for those, and only support the seven most common ones, namely, pubkeyhash, scripthash, witness_v0_keyhash, witness_v0_scripthash, witness_v1_taproot, anchor, and nulldata
 - the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why
+
+For getblockchaininfo, these additional caveats apply: chainwork is always unknown, size_on_disk is always unknown, verificationprogress is always 1, initialblockdownload is always false, "pruned" is always false, "warnings" is always an empty array, and "chain" is always mainnet. Also, the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
 
 For getblockheader, these additional caveats apply: chainwork is always unknown, and the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
 
