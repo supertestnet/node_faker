@@ -770,6 +770,22 @@
                                 "witness_program": witness_program,
                             }
                         }
+                        if ( command === "getnettotals" ) {
+                            node_faker.status = "";
+                            return {
+                                "totalbytesrecv": 0,
+                                "totalbytessent": 0,
+                                "timemillis": Date.now(),
+                                "uploadtarget": {
+                                    "timeframe": 86400,
+                                    "target": 0,
+                                    "target_reached": false,
+                                    "serve_historical_blocks": false,
+                                    "bytes_left_in_cycle": 0,
+                                    "time_left_in_cycle": 0
+                                }
+                            }
+                        }
                         node_faker.status = "";
                         return "unknown error";
                     } catch ( e ) {
@@ -973,6 +989,7 @@
                 <li>estimatesmartfee conf_target ( "estimate_mode" )</li>
                 <li>uptime</li>
                 <li>validateaddress "address"</li>
+                <li>getnettotals</li>
             </ul>
         </div>
         <p>Response:</p>
