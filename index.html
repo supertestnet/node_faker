@@ -628,10 +628,6 @@
                             var txhash = command_arr[ 1 ];
                             txhash = txhash.replaceAll( '"', "" ).replaceAll( "'", "" );
                             var verbosity = Number( command_arr[ 2 ] );
-                            if ( verbosity > 1 ) {
-                                node_faker.status = "";
-                                return `error: verbosity levels higher than 1 are not yet supported in this implementation`;
-                            }
                             if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             //get the txhex
@@ -650,7 +646,28 @@
                                 return txhex;
                             }
 
-                            //return the whole response from the server if verbosity is set to 1
+                            //return the whole response from the server if verbosity is higher than 1
+                            //note that I used to throw an error if verbosity was higher than 1, because that's *supposed to* add prevout data for each input and the txfee paid by the tx (obtained by subtracting the value of the outputs from the value of the inputs), and I hadn't implemented that yet; but after looking at bitcoin core's documentation, I discovered that even if verbsosity *is* set higher than 1, Core still omits that unless "block undo data" is available, which I think means, it only displays that data if it can recover the blocks where the input utxos were created. Since Core sometimes omits this data, even when verbosity is set higher than 1, I think it is safe to omit it too, so that's what I'm doing.
+                            node_faker.status = "";
+                            return response_from_server.result;
+                        }
+                        if ( command === "sendrawtransaction" ) {
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            var txhex = command_arr[ 1 ];
+                            txhex = txhex.replaceAll( '"', "" ).replaceAll( "'", "" );
+
+                            //get header info about the relevant block
+                            var formatted_command = {
+                                "id": node_faker.getRand( 8 ),
+                                "method": "blockchain.transaction.broadcast",
+                                "params": [ txhex ],
+                            }
+                            var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                            response_from_server = JSON.parse( response_from_server );
+                            if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
+                                node_faker.status = "";
+                                return response_from_server.error.message;
+                            }
                             node_faker.status = "";
                             return response_from_server.result;
                         }
