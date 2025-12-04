@@ -74,6 +74,7 @@
                     return json;
                 },
                 getMTP: async ( socket, blockheight, first_timestamp ) => {
+                    if ( blockheight < 12 ) return first_timestamp;
                     var last_eleven_blocks = [];
                     var blockheight_minus_one = blockheight - 1;
                     var last_eleven_timestamps = [first_timestamp];
