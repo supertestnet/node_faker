@@ -308,10 +308,10 @@
                                 "mediantime": median_timestamp,
                                 "verificationprogress": 1,
                                 "initialblockdownload": false,
-                                "chainwork": "unknown",
+                                "chainwork": "0".repeat( 64 ),
                                 "size_on_disk": "unknown",
                                 "pruned": false,
-                                "warnings": [],
+                                "warnings": ["node faker, emulating bitcoind, incomplete data"],
                             }
                         }
                         if ( command === "getblock" ) {
@@ -419,7 +419,7 @@
                                 "bits": nbits,
                                 "target": current_target,
                                 "difficulty": difficulty,
-                                "chainwork": "unknown",
+                                "chainwork": "0".repeat( 64 ),
                                 "nTx": txs.length,
                                 "previousblockhash": parsed_header.prevblock,
                                 "strippedsize": total_bsize,
@@ -573,7 +573,7 @@
                                 "bits": nbits,
                                 "target": current_target,
                                 "difficulty": difficulty,
-                                "chainwork": "unknown",
+                                "chainwork": "0".repeat( 64 ),
                                 "nTx": num_of_txs,
                                 "previousblockhash": parsed_header.prevblock,
                                 "nextblockhash": next_blockhash,
