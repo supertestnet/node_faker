@@ -378,26 +378,24 @@
                             var total_vsize = 0;
                             var total_weight = 0;
                             var txids = [];
-                            (async()=>{
-                                //I populate the txids in an async function so that it happens in the background
-                                var i; for ( i=0; i<txs.length; i++ ) {
-                                    if ( String( i ).endsWith( "00" ) ) {
-                                        node_faker.status = `parsing tx ${i} out of ${txs.length}...`;
-                                        await node_faker.waitSomeTime( 1 );
-                                    }
-                                    var tx = txs[ i ];
-                                    var sizes = tapscript.Tx.util.getTxSize( tx.hex );
-                                    var total_bsize = total_bsize + sizes.bsize;
-                                    var total_vsize = total_vsize + sizes.vsize;
-                                    var total_weight = total_weight + sizes.weight;
-                                    if ( !command_arr[ 2 ] || ( command_arr[ 2 ] && Number( command_arr[ 2 ] ) === 1 ) ) txids.push( tapscript.Tx.util.getTxid( tx.hex ) );
-                                    else if ( command_arr[ 2 ] && Number( command_arr[ 2 ] ) > 1 ) {
-                                        var include_txhex = true;
-                                        var tx_obj = await node_faker.convertTxhexToCoreFormat( tx.hex, include_txhex );
-                                        txids.push( tx_obj );
-                                    }
-                                }                                
-                            })();
+                            var i; for ( i=0; i<txs.length; i++ ) {
+                                if ( String( i ).endsWith( "00" ) ) {
+                                    node_faker.status = `parsing tx ${i} out of ${txs.length}...`;
+                                    //I sometimes wait 1 millisecond so that the status displayer can "catch up" and display my current status
+                                    if ( $( '.response' ) ) await node_faker.waitSomeTime( 1 );
+                                }
+                                var tx = txs[ i ];
+                                var sizes = tapscript.Tx.util.getTxSize( tx.hex );
+                                var total_bsize = total_bsize + sizes.bsize;
+                                var total_vsize = total_vsize + sizes.vsize;
+                                var total_weight = total_weight + sizes.weight;
+                                if ( !command_arr[ 2 ] || ( command_arr[ 2 ] && Number( command_arr[ 2 ] ) === 1 ) ) txids.push( tapscript.Tx.util.getTxid( tx.hex ) );
+                                else if ( command_arr[ 2 ] && Number( command_arr[ 2 ] ) > 1 ) {
+                                    var include_txhex = true;
+                                    var tx_obj = await node_faker.convertTxhexToCoreFormat( tx.hex, include_txhex );
+                                    txids.push( tx_obj );
+                                }
+                            }
                             var loop = async () => {
                                 if ( txids.length === txs.length ) return;
                                 await node_faker.waitSomeTime( 10 );
