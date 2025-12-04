@@ -51,7 +51,6 @@
                     if ( !json ) return 'you forgot to include a command';
                     return new Promise( async resolve => {
                         var handleFunction = async message => resolve( message.data );
-                        socket.removeAllListeners();
                         socket.addEventListener( 'message', handleFunction );
                         socket.send( JSON.stringify( json ) );
                     });
