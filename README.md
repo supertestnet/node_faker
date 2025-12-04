@@ -36,6 +36,8 @@ Also, the app only supports some bitcoin-cli commands for now; namely, these one
 - getchaintxstats
 - getmininginfo
 - getnettotals
+- getmempoolinfo
+- getrawmempool
 
 # Command-specific caveats
 
@@ -65,7 +67,9 @@ For getchaintxstats, the two optional parameters ( nblocks and blockhash ) are i
 
 For getnetworkinfo, connections are always 0 and "warnings" is always an array containing one value that just says node faker is emulating bitcoind and has incomplete data
 
+For getmempoolinfo, the app always returns info about an empty mempool, just as if bitcoin core is running in blocksonly mode
+
+For getrawmempool, the app always returns an empty array, just as if bitcoin core is running in blocksonly mode
+
 # Next steps
 - Implement getpeerinfo
-- Find out why spruned implemented optional support for getmempoolinfo, and if it is needed, try to do something similar to what they did
-- Find out why spruned implemented optional support for getrawmempool, and if it is needed, try to do something similar to what they did
