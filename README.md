@@ -30,7 +30,7 @@ For getblock, these additional caveats apply:
 
 - chainwork is always unknown
 - when the "verbose" option is set to 2 or more, all transactions in the block are represented in a format similar to Core's, with the following exceptions:
-- sometimes, for inputs, Core provides a prevout object, though according to its documentation, it is "omitted if block undo data is not available." My format just always omits it; I'm not sure what block undo data is, but I'll just say that in my implementation, block undo data is never available, so that means I'm returning the same data you could expect from a version of Core with no block undo data
+- sometimes, for inputs, Core provides a prevout object, though according to its documentation, it is "omitted if block undo data is not available." My format just always omits it; I'm not sure what block undo data is, but I'll just say that in my implementation, block undo data is never available (I suspect it is related to pruning), so that means I'm returning the same data you could expect from a version of Core with no block undo data
 - in scriptSigs, witnesses, and output scripts, Core has an ASM format that I don't perfectly emulate; I use taprootjs's ASM format instead, after applying the "join" operator; this is pretty close to Core's ASM format, but it's not identical
 - in particular, for signatures that have a sigflag appended, Core's format changes the sigflag from its hex value to a corresponding marker such as: `[ALL],` whereas taprootjs just keeps the hex value, e.g. `01`
 - when displaying the value of a utxo, Core uses a number format that allows for trailing zeroes; thus it might look like this: `"value": 0.21000000,` – whereas my format does not display trailing zeroes; e.g. my format would display that like this: `"value": 0.21,`
@@ -42,7 +42,7 @@ For getblockchaininfo, these additional caveats apply: chainwork is always unkno
 
 For getblockheader, these additional caveats apply: chainwork is always unknown, and the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
 
-For getrawtransaction, these additional caveats apply: if a blockhash is passed as a third parameter, it is always ignored, because it's just meant to bitcoin core more efficient (it doesn't affect the output), and electrum servers don't seem to have an endpoint for passing that parameter to them anyway; also, prevout objects and txfee data are always omitted from the transaction and its inputs, even if verbosity is set higher than 1, because Core omits them too whenever "block undo data" is not available, and as mentioned previously, I don't know what that is, but I can see I'm allowed to omit it (because Core sometimes omits it) so I'm just always omitting it
+For getrawtransaction, these additional caveats apply: if a blockhash is passed as a third parameter, it is always ignored, because it doesn't affect the output anyway (it's just meant to make bitcoin core more efficient) and electrum servers don't seem to have an endpoint for passing that parameter to them anyway; also, prevout objects and txfee data are always omitted from the transaction and its inputs, even if verbosity is set higher than 1, because Core omits them too whenever "block undo data" is not available, and as mentioned previously, I don't know what that is, but I can see I'm allowed to omit it (because Core sometimes omits it) so I'm just always omitting it
 
 # Next steps
 - Implement sendrawtransaction ( allowhighfees )
