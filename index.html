@@ -534,6 +534,7 @@
                     }
                     if ( command === "gettxout" ) {
                         var txhash = command_arr[ 1 ];
+                        txhash = txhash.replaceAll( '"', "" ).replaceAll( "'", "" );
                         var vout = command_arr[ 2 ];
                         if ( command_arr[ 3 ] ) return `error: the gettxout method in this implementation must not have an "include_mempool" parameter because this implementation does not support the mempool yet`;
                         if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
@@ -574,6 +575,7 @@
                     }
                     if ( command === "getrawtransaction" ) {
                         var txhash = command_arr[ 1 ];
+                        txhash = txhash.replaceAll( '"', "" ).replaceAll( "'", "" );
                         var verbosity = Number( command_arr[ 2 ] );
                         if ( verbosity > 1 ) return `error: verbosity levels higher than 1 are not yet supported in this implementation`;
                         if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
@@ -766,13 +768,13 @@
         <div class="supported_commands hidden">
             <ul>
                 <li>getbestblockhash</li>
-                <li>getblock</li>
+                <li>getblock "blockhash" ( verbosity )</li>
                 <li>getblockchaininfo</li>
                 <li>getblockcount</li>
-                <li>getblockhash</li>
-                <li>getblockheader</li>
-                <li>getrawtransaction</li>
-                <li>gettxout</li>
+                <li>getblockhash height</li>
+                <li>getblockheader "blockhash" ( verbose )</li>
+                <li>gettxout "txid" n</li>
+                <li>getrawtransaction "txid"</li>
             </ul>
         </div>
         <p>Response:</p>
