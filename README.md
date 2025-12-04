@@ -67,6 +67,5 @@ For getnetworkinfo, connections are always 0 and "warnings" is always an array c
 
 # Next steps
 - Implement getpeerinfo
-- Implement getnetworkinfo
 - Find out why spruned implemented optional support for getmempoolinfo, and if it is needed, try to do something similar to what they did
 - Find out why spruned implemented optional support for getrawmempool, and if it is needed, try to do something similar to what they did
