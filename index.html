@@ -7,6 +7,7 @@
         <script>
             var node_faker = {
                 status: "",
+                uptime: 0,
                 getRand: num_of_bytes => window.crypto.getRandomValues( new Uint8Array( num_of_bytes ) ).toHex(),
                 waitSomeTime: num => new Promise( resolve => setTimeout( resolve, num ) ),
                 hexToBytes: hex => Uint8Array.from( hex.match( /.{1,2}/g ).map( byte => parseInt( byte, 16 ) ) ),
@@ -671,6 +672,64 @@
                             node_faker.status = "";
                             return response_from_server.result;
                         }
+                        if ( command === "estimatefee" ) {
+                            var nblocks = Number( command_arr[ 1 ] );
+                            if ( !nblocks ) {
+                                node_faker.status = "";
+                                return 'invalid number of arguments';
+                            }
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
+
+                            //get header info about the relevant block
+                            var formatted_command = {
+                                "id": node_faker.getRand( 8 ),
+                                "method": "blockchain.estimatefee",
+                                "params": [ nblocks ],
+                            }
+                            var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                            response_from_server = JSON.parse( response_from_server );
+                            if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
+                                node_faker.status = "";
+                                return response_from_server.error.message;
+                            }
+                            node_faker.status = "";
+                            return response_from_server.result;
+                        }
+                        if ( command === "estimatesmartfee" ) {
+                            var nblocks = Number( command_arr[ 1 ] );
+                            if ( !nblocks ) {
+                                node_faker.status = "";
+                                return 'invalid number of arguments';
+                            }
+                            var num_for_query = nblocks;
+                            var economical = command_arr[ 2 ] || "";
+                            economical = economical.toLowerCase().replaceAll( '"', "" ).replaceAll( "'", "" );
+                            if ( economical === "economical" ) num_for_query = num_for_query + 3;
+
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
+
+                            //get header info about the relevant block
+                            var formatted_command = {
+                                "id": node_faker.getRand( 8 ),
+                                "method": "blockchain.estimatefee",
+                                "params": [ nblocks ],
+                            }
+                            var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                            response_from_server = JSON.parse( response_from_server );
+                            if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
+                                node_faker.status = "";
+                                return response_from_server.error.message;
+                            }
+                            node_faker.status = "";
+                            return {
+                                "feerate": response_from_server.result,
+                                "blocks": nblocks,
+                            }
+                        }
+                        if ( command === "uptime" ) {
+                            node_faker.status = "";
+                            return node_faker.uptime;
+                        }
                         node_faker.status = "";
                         return "unknown error";
                     } catch ( e ) {
@@ -770,6 +829,11 @@
                     return Number( btc );
                 },
                 bitcoinToSats: btc => Math.floor( btc * 100_000_000 ),
+                uptimeLoop: async () => {
+                    await node_faker.waitSomeTime( 1000 );
+                    node_faker.uptime = node_faker.uptime + 1;
+                    node_faker.uptimeLoop();
+                },
             }
         </script>
         <title>Node Faker</title>
@@ -857,7 +921,9 @@
                 <li>getblockheader "blockhash" ( verbose )</li>
                 <li>getrawtransaction "txid" ( verbose )</li>
                 <li>gettxout "txid" n ( include_mempool )</li>
-                <li>sendrawtransaction "txhex"</li>
+                <li>sendrawtransaction "hexstring"</li>
+                <li>estimatefee nblocks</li>
+                <li>estimatesmartfee conf_target ( "estimate_mode" )</li>
             </ul>
         </div>
         <p>Response:</p>
@@ -894,6 +960,7 @@
             var electrum_server = electrum_servers[ Math.floor( Math.random() * electrum_servers.length ) ];
             var esplora_server = esplora_servers[ Math.floor( Math.random() * esplora_servers.length ) ];
             var socket = null;
+            node_faker.uptimeLoop();
         </script>
     </body>
 </html>
