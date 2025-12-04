@@ -251,12 +251,9 @@
                     return tx_objects;
                 },
                 blobToHex: async blob => {
-                    return new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onloadend = () => resolve( ( new Uint8Array( reader.result ) ).toHex() );
-                        reader.onerror = reject;
-                        reader.readAsArrayBuffer(blob);
-                    });
+                    var buf = await blob.arrayBuffer();
+                    var arr = new Uint8Array( buf );
+                    return arr.toHex();
                 },
                 processCommand: async command => {
                     try {
@@ -823,7 +820,7 @@
                                 "localrelay": false,
                                 "timeoffset": 0,
                                 "networkactive": false,
-                                "connections": 5,
+                                "connections": 0,
                                 "networks": [
                                     {
                                         "name": "ipv4",
