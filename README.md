@@ -24,7 +24,7 @@ For now, the app only supports some bitcoin-cli commands, namely, these ones:
 - getblockhash height
 - getblockheader "blockhash" ( verbose )
 - gettxout "txid" n
-- getrawtransaction "txid"
+- getrawtransaction "txid" ( verbose )
 
 For getblock, these additional caveats apply:
 
@@ -49,9 +49,9 @@ For getrawtransaction, these additional caveats apply: verbosity cannot be set t
 # Next steps
 - Allow setting the `include_mempool` parameter in gettxout
 - Allow setting verbosity to 2 or higher in getrawtransaction
-- Implement sendrawtransaction
-- Implement estimatefee
-- Implement estimatesmartfee
+- Implement sendrawtransaction ( allowhighfees )
+- Implement estimatefee nblocks
+- Implement estimatesmartfee conf_target ("estimate_mode")
 - Implement uptime
 - Implement getpeerinfo
 - Implement getnetworkinfo
