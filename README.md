@@ -45,3 +45,19 @@ For getblockheader, these additional caveats apply: chainwork is always unknown,
 For gettxout, this app will throw an error if you set the `include_mempool` parameter, because I haven't modified the app yet to display proper values when a utxo is only created in the mempool and isn't confirmed yet
 
 For getrawtransaction, these additional caveats apply: verbosity cannot be set to 2 or higher, and if a blockhash is passed as a third parameter, it is always ignored
+
+# Next steps
+- Allow setting the `include_mempool` parameter in gettxout
+- Allow setting verbosity to 2 or higher in getrawtransaction
+- Implement sendrawtransaction
+- Implement estimatefee
+- Implement estimatesmartfee
+- Implement uptime
+- Implement getpeerinfo
+- Implement getnetworkinfo
+- Implement validateaddress
+- Find out what parts of getchaintxstats spruned imlemented and implement those
+- Find out what parts of getmininginfo spruned imlemented and implement those
+- Find out what parts of getnettotals spruned imlemented and implement those
+- Find out why spruned implemented optional support for getmempoolinfo, and if it is needed, try to do something similar to what he did
+- Find out why spruned implemented optional support for getrawmempool, and if it is needed, try to do something similar to what he did
