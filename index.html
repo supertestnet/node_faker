@@ -8,6 +8,7 @@
             var node_faker = {
                 status: "",
                 uptime: 0,
+                waitWhenParsingTxs: false,
                 getRand: num_of_bytes => window.crypto.getRandomValues( new Uint8Array( num_of_bytes ) ).toHex(),
                 waitSomeTime: num => new Promise( resolve => setTimeout( resolve, num ) ),
                 hexToBytes: hex => Uint8Array.from( hex.match( /.{1,2}/g ).map( byte => parseInt( byte, 16 ) ) ),
@@ -383,7 +384,7 @@
                                 if ( String( i ).endsWith( "00" ) ) {
                                     node_faker.status = `parsing tx ${i} out of ${txs.length}...`;
                                     //I sometimes wait 1 millisecond so that the status displayer can "catch up" and display my current status
-                                    if ( $( '.response' ) ) await node_faker.waitSomeTime( 1 );
+                                    if ( node_faker.waitWhenParsingTxs ) await node_faker.waitSomeTime( 1 );
                                 }
                                 var tx = txs[ i ];
                                 var sizes = tapscript.Tx.util.getTxSize( tx.hex );
@@ -1216,6 +1217,7 @@
             var electrum_server = electrum_servers[ Math.floor( Math.random() * electrum_servers.length ) ];
             var esplora_server = esplora_servers[ Math.floor( Math.random() * esplora_servers.length ) ];
             var socket = null;
+            node_faker.waitWhenParsingTxs = true;
             node_faker.uptimeLoop();
         </script>
     </body>
