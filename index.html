@@ -730,6 +730,46 @@
                             node_faker.status = "";
                             return node_faker.uptime;
                         }
+                        if ( command === "validateaddress" ) {
+                            var address = command_arr[ 1 ];
+                            address = address.replaceAll( '"', "" ).replaceAll( "'", "" );
+                            var is_valid = node_faker.isValidAddress( address );
+                            if ( !is_valid ) {
+                                node_faker.status = "";
+                                return {
+                                    "isvalid": false,
+                                    "error_locations": [
+                                    ],
+                                    "error": "Invalid checksum or length of Base58 address (P2PKH or P2SH)"
+                                }
+                            }
+
+                            node_faker.status = "";
+                            if ( address !== "bc1pfeessrawgf" ) {
+                                var scriptPubKey = tapscript.Script.encode( tapscript.Address.toScriptPubKey( address ) ).hex.substring( 2 );
+                                var isscript = address.startsWith( "3" ) || ( address.startsWith( "bc1q" ) && scriptPubKey.length === 68 );
+                                var iswitness = scriptPubKey.startsWith( "00" ) || scriptPubKey.startsWith( "51" );
+                                var witness_version = undefined;
+                                if ( iswitness ) witness_version = scriptPubKey.startsWith( "00" ) ? 0 : 1;
+                                var witness_program = undefined;
+                                if ( iswitness ) witness_program = scriptPubKey.substring( 4 );
+                            } else {
+                                var scriptPubKey = "51024e73";
+                                var isscript = false;
+                                var iswitness = true;
+                                var witness_version = 1;
+                                var witness_program = "024e73";
+                            }
+                            return {
+                                "isvalid": true,
+                                "address": address,
+                                "scriptPubKey": scriptPubKey,
+                                "isscript": isscript,
+                                "iswitness": iswitness,
+                                "witness_version": witness_version,
+                                "witness_program": witness_program,
+                            }
+                        }
                         node_faker.status = "";
                         return "unknown error";
                     } catch ( e ) {
@@ -834,6 +874,13 @@
                     node_faker.uptime = node_faker.uptime + 1;
                     node_faker.uptimeLoop();
                 },
+                isValidAddress: address => {
+                    if ( address === "bc1pfeessrawgf" ) return true;
+                    try {
+                        return !!tapscript.Address.decode( address ).script;
+                    } catch( e ) {return;}
+                    return;
+                },
             }
         </script>
         <title>Node Faker</title>
@@ -925,6 +972,7 @@
                 <li>estimatefee nblocks</li>
                 <li>estimatesmartfee conf_target ( "estimate_mode" )</li>
                 <li>uptime</li>
+                <li>validateaddress "address"</li>
             </ul>
         </div>
         <p>Response:</p>
