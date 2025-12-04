@@ -54,7 +54,7 @@ For getrawtransaction, these additional caveats apply: if a blockhash is passed 
 
 For sendrawtransaction, these additional caveats apply: if the ( allowhighfees ) parameter is passed, it is ignored because electrum servers don't have an endpoint for passing this parameter
 
-For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a second parameter ("estimate_mode") just adds 3 blocks to whatever conf_target you passed, rather than doing the complicated evaluations done by bitcoin core
+For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a second parameter ("estimate_mode") just adds 3 blocks to whatever conf_target you passed, rather than doing the complicated evaluations done by bitcoin core; and if you pass a value for this parameter other than the word economical, it is ignored, because the only two other valid values I'm aware of are conservative, which is the default, and unset, which is treated the same as conservative
 
 # Next steps
 - Implement getpeerinfo
