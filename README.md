@@ -42,10 +42,9 @@ For getblockchaininfo, these additional caveats apply: chainwork is always unkno
 
 For getblockheader, these additional caveats apply: chainwork is always unknown, and the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
 
-For getrawtransaction, these additional caveats apply: verbosity cannot be set higher than 1; if a blockhash is passed as a third parameter, it is always ignored; and prevout objects are always omitted from inputs because Core omits them too whenever "block undo data" is not available, and as mentioned previously, I don't know what that is, but I can see I'm allowed to omit it (because Core sometimes omits it) so I'm just always omitting it
+For getrawtransaction, these additional caveats apply: if a blockhash is passed as a third parameter, it is always ignored, because it's just meant to bitcoin core more efficient (it doesn't affect the output), and electrum servers don't seem to have an endpoint for passing that parameter to them anyway; also, prevout objects and txfee data are always omitted from the transaction and its inputs, even if verbosity is set higher than 1, because Core omits them too whenever "block undo data" is not available, and as mentioned previously, I don't know what that is, but I can see I'm allowed to omit it (because Core sometimes omits it) so I'm just always omitting it
 
 # Next steps
-- Allow setting verbosity higher than 1 in getrawtransaction
 - Implement sendrawtransaction ( allowhighfees )
 - Implement estimatefee nblocks
 - Implement estimatesmartfee conf_target ("estimate_mode")
