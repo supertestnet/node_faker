@@ -30,6 +30,7 @@ Also, the app only supports some bitcoin-cli commands for now; namely, these one
 - sendrawtransaction "hexstring"
 - estimatefee nblocks
 - estimatesmartfee conf_target ( "estimate_mode" )
+- uptime
 
 # Command-specific caveats
 
@@ -56,7 +57,6 @@ For sendrawtransaction, these additional caveats apply: if the ( allowhighfees )
 For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a second parameter ("estimate_mode") just adds 3 blocks to whatever conf_target you passed, rather than doing the complicated evaluations done by bitcoin core
 
 # Next steps
-- Implement uptime
 - Implement getpeerinfo
 - Implement getnetworkinfo
 - Implement validateaddress
