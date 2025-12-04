@@ -2,15 +2,26 @@
 Emulate bitcoind and bitcoin-cli in the browser
 
 # What is this?
-This is a website that tries to emulate bitcoind in the browser by getting block data from electrum servers.
+This is a website and a desktop app that tries to emulate bitcoind by getting block data from electrum servers.
 
 # How can I try it?
 Just click here and follow the instructions: https://supertestnet.github.io/node_faker
+
+Or, to use the desktop version, see instructions further below.
 
 # Why did you make this?
 For two main reasons. One is that when working on some of my other projects I occasionally look for a way to interact with bitcoind programatically in the browser, but I find it hard to keep a node running. This tool will let me emulate one and test my apps against that, with confidence that it might not need much modification to work with a "real" bitcoin node.
 
 Also, I used to use a project called [spruned](https://github.com/gdassori/spruned), which I think means "super pruned." It tried to emulate bitcoind's json api, except instead of storing the blockchain on disk, it requested block data and transaction data on-the-fly from bitcoin nodes and electrum nodes. This allowed it to support software like lnd, cln, btc-rpc-explorer, and even bitcoin-cli, by simply "pretending" to be a bitcoin node. It was actually (mostly) just an electrum client, but software that *interacted* with it couldn't tell the difference, because it gave the same responses a real bitcoin node would. I think that's very cool, but it no longer seems to work for me, and I figured I could (mostly) recreate it in the browser. So I did.
+
+# Instructions for the desktop version
+- Get nodejs
+- Create a directory called something like "node_faker"
+- Enter that directory and run `npm init -y`
+- Install the dependencies: `npm i ws @cmdcode/tapscript`
+- Download the index.js file and put it in your node_faker directory (or whatever you called it)
+- Run the app with node index.js
+- Voila! You can interact with it using bitcoin-cli -- if you're okay with the fact that a lot of commands don't work
 
 # General caveats
 - This app is not fast as a full node because internet download is slower than a read from disk
