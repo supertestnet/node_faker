@@ -639,6 +639,10 @@
                             }
                             var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
                             response_from_server = JSON.parse( response_from_server );
+                            if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
+                                node_faker.status = "";
+                                return response_from_server.error.message;
+                            }
                             var txhex = response_from_server.result.hex;
 
                             //return the txhex if verbosity is set to 0
