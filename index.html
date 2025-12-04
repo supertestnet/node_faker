@@ -265,7 +265,7 @@
                             return "unknown error";
                         }
                         if ( command === "getblockchaininfo" ) {
-                            if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             //get the header
                             var formatted_command = {
@@ -314,7 +314,7 @@
                             }
                         }
                         if ( command === "getblock" ) {
-                            if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
                             var blockhash = command_arr[ 1 ];
                             blockhash = blockhash.replaceAll( '"', "" ).replaceAll( "'", "" );
                             var endpoint = `/block/${blockhash}/raw`;
@@ -428,7 +428,7 @@
                             }
                         }
                         if ( command === "getbestblockhash" ) {
-                            if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             //get the header
                             var formatted_command = {
@@ -448,7 +448,7 @@
                             return blockhash;
                         }
                         if ( command === "getblockcount" ) {
-                            if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             //get the header
                             var formatted_command = {
@@ -464,7 +464,7 @@
                             return response_from_server.result.height;
                         }
                         if ( command === "getblockhash" ) {
-                            if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
                             var height = Number( command_arr[ 1 ] );
 
                             //get header info about the relevant block
@@ -485,7 +485,7 @@
                             return blockhash;
                         }
                         if ( command === "getblockheader" ) {
-                            if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             var blockhash = command_arr[ 1 ];
                             blockhash = blockhash.replaceAll( '"', "" ).replaceAll( "'", "" );
@@ -586,7 +586,7 @@
                                 node_faker.status = "";
                                 return `error: the gettxout method in this implementation must not have an "include_mempool" parameter because this implementation does not support the mempool yet`;
                             }
-                            if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             //get the txhex
                             var formatted_command = {
@@ -632,7 +632,7 @@
                                 node_faker.status = "";
                                 return `error: verbosity levels higher than 1 are not yet supported in this implementation`;
                             }
-                            if ( !socket ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             //get the txhex
                             var formatted_command = {
