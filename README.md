@@ -13,21 +13,22 @@ For two main reasons. One is that when working on some of my other projects I oc
 Also, I used to use a project called [spruned](https://github.com/gdassori/spruned), which I think means "super pruned." It tried to emulate bitcoind's json api, except instead of storing the blockchain on disk, it requested block data and transaction data on-the-fly from bitcoin nodes and electrum nodes. This allowed it to support software like lnd, cln, btc-rpc-explorer, and even bitcoin-cli, by simply "pretending" to be a bitcoin node. It was actually (mostly) just an electrum client, but software that *interacted* with it couldn't tell the difference, because it gave the same responses a real bitcoin node would. I think that's very cool, but it no longer seems to work for me, and I figured I could (mostly) recreate it in the browser. So I did.
 
 # Caveats
-For now, the app only supports some bitcoin-cli commands, namely, these ones:
-
+- Not fast as a full node: internet download is slower than a read from disk.
+- Doesn't help to keep the network healthy (I care about that, and this is really going to be addressed).
+- Privacy leaky if not behind Tor
+- For now, the app only supports some bitcoin-cli commands, namely, these ones:
 - getbestblockhash
-- getblock
+- getblock "blockhash" ( verbosity )
 - getblockchaininfo
 - getblockcount
-- getblockhash
-- getblockheader
-- gettxout
-- getrawtransaction
+- getblockhash height
+- getblockheader "blockhash" ( verbose )
+- gettxout "txid" n
+- getrawtransaction "txid"
 
-For getblockchaininfo, these additional caveats apply: chainwork is always unknown, size_on_disk is always unknown, verificationprogress is always 1, initialblockdownload is always false, "pruned" is always false, "warnings" is always an empty array, and "chain" is always mainnet. Also, the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
+- For getblockchaininfo, these additional caveats apply: chainwork is always unknown, size_on_disk is always unknown, verificationprogress is always 1, initialblockdownload is always false, "pruned" is always false, "warnings" is always an empty array, and "chain" is always mainnet. Also, the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
 
-For getblock, these additional caveats apply:
-
+- For getblock, these additional caveats apply:
 - chainwork is always unknown
 - when the "verbose" option is set to 2 or more, all transactions in the block are represented in a format similar to Core's, with the following exceptions:
 - sometimes, for inputs, Core provides a prevout object, though I don't understand what triggers that (I suspect it might do it only when the utxo came from its own wallet), so my format just never does that at all
@@ -38,8 +39,8 @@ For getblock, these additional caveats apply:
 - four of the output types supported by Core (i.e. pubkey, multisig, witness_unknown, and nonstandard) do not get their output type displayed properly in my format; instead I just say `"type": "unknown",` for those, and only support the seven most common ones, namely, pubkeyhash, scripthash, witness_v0_keyhash, witness_v0_scripthash, witness_v1_taproot, anchor, and nulldata
 - the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why
 
-For getblockheader, these additional caveats apply: chainwork is always unknown, and the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
+- For getblockheader, these additional caveats apply: chainwork is always unknown, and the "difficulty" number does not match the difficulty number provided by bitcoin core, and I don't know why.
 
-For gettxout, this app will throw an error if you set the `include_mempool` parameter, because I haven't modified the app yet to display proper values when a utxo is only created in the mempool and isn't confirmed yet
+- For gettxout, this app will throw an error if you set the `include_mempool` parameter, because I haven't modified the app yet to display proper values when a utxo is only created in the mempool and isn't confirmed yet
 
-For getrawtransaction, these additional caveats apply: verbosity cannot be set to 2 or higher, and if a blockhash is passed as a third parameter, it is always ignored
+- For getrawtransaction, these additional caveats apply: verbosity cannot be set to 2 or higher, and if a blockhash is passed as a third parameter, it is always ignored
