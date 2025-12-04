@@ -770,6 +770,47 @@
                                 "witness_program": witness_program,
                             }
                         }
+                        if ( command === "getchaintxstats" ) {
+                            node_faker.status = "";
+                            return {
+                                "time": Math.floor( Date.now() / 1000 ),
+                                "txcount": 0,
+                                "window_block_count": 0,
+                                "window_tx_count": 0,
+                                "window_interval": 0,
+                                "txrate": 0,
+                                "errors": "node faker, emulating bitcoind, incomplete data"
+                            }
+                        }
+                        if ( command === "getmininginfo" ) {
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
+
+                            //get the header
+                            var formatted_command = {
+                                "id": node_faker.getRand( 8 ),
+                                "method": "blockchain.headers.subscribe",
+                                "params": [],
+                            }
+                            var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                            response_from_server = JSON.parse( response_from_server );
+
+                            //extract info from the header
+                            var header = response_from_server.result.hex;
+                            var parsed_header = node_faker.parseHeader( header );
+                            var blockheight = response_from_server.result.height;
+
+                            node_faker.status = "";
+                            return {
+                                "blocks": blockheight,
+                                "chain": "mainnet",
+                                "currentblocktx": 0,
+                                "currentblockweight": 0,
+                                "difficulty": 0,
+                                "networkhashps": 0,
+                                "pooledtx": 0,
+                                "errors": "node faker, emulating bitcoind, incomplete data"
+                            }
+                        }
                         if ( command === "getnettotals" ) {
                             node_faker.status = "";
                             return {
@@ -989,6 +1030,8 @@
                 <li>estimatesmartfee conf_target ( "estimate_mode" )</li>
                 <li>uptime</li>
                 <li>validateaddress "address"</li>
+                <li>getchaintxstats</li>
+                <li>getmininginfo</li>
                 <li>getnettotals</li>
             </ul>
         </div>
