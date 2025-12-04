@@ -45,7 +45,7 @@ For getblockheader, these additional caveats apply: chainwork is always unknown,
 For getrawtransaction, these additional caveats apply: verbosity cannot be set higher than 1; if a blockhash is passed as a third parameter, it is always ignored; and prevout objects are always omitted from inputs because Core omits them too whenever "block undo data" is not available, and as mentioned previously, I don't know what that is, but I can see I'm allowed to omit it (because Core sometimes omits it) so I'm just always omitting it
 
 # Next steps
-- Allow setting verbosity to 2 or higher in getrawtransaction
+- Allow setting verbosity higher than 1 in getrawtransaction
 - Implement sendrawtransaction ( allowhighfees )
 - Implement estimatefee nblocks
 - Implement estimatesmartfee conf_target ("estimate_mode")
