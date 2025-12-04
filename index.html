@@ -730,6 +730,87 @@
                             node_faker.status = "";
                             return node_faker.uptime;
                         }
+                        if ( command === "getpeerinfo" ) {
+                            //get list of peers
+                            node_faker.status = "getting list of peers...";
+                            var peers_data = await fetch( 'https://dns.google/resolve?name=seed.btc.petertodd.org&type=A' );
+                            var peers_json = await peers_data.json();
+
+                            //prepare function to test them
+                            var tryRandomPeer = async ( source, peers_tried = [] ) => {
+                                var loop = () => {
+                                    var rand = Math.floor( Math.random() * source.length );
+                                    if ( peers_tried.includes( rand ) ) return loop();
+                                    return rand;
+                                }
+                                var peer_to_try = loop();
+                                peers_tried.push( peer_to_try );
+                                try {
+                                    var ip = peers_json.Answer[ peer_to_try ].data;
+                                    var port = ip.includes( ":" ) ? Number( ip.substring( 0, ip.indexOf( ":" ) + 1 ) ) : 8333;
+                                    var checkPeer = async ( ip, port ) => {
+                                        return new Promise( async resolve => {
+                                            var peer_data = await fetch("https://corsproxy.io/?https://bitnodes.io/api/v1/checknode/", {
+                                                "headers": {
+                                                    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+                                                },
+                                                "referrer": window.location.href,
+                                                "body": `address=${ip}&port=${port}`,
+                                                "method": "POST",
+                                                "mode": "cors",
+                                            });
+                                            var peer_json = await peer_data.json();
+                                            if ( peer_json.hasOwnProperty( "user_agent" ) ) resolve( peer_json[ "user_agent" ] );
+                                        });
+                                    }
+                                    var peer_is_good = await checkPeer( ip, port );
+                                    if ( peer_is_good ) return [ 'peer_is_good', peer_to_try, `${ip}:${port}`, peer_is_good ];
+                                    return peers_tried;
+                                } catch ( e ) {
+                                    return peers_tried;
+                                }
+                            }
+
+                            //find 5 good peers
+                            var good_peers = [];
+                            var peers_tried = [];
+                            var loop = async () => {
+                                node_faker.status = `found peer ${good_peers.length} out of 5...`;
+                                var peer = await tryRandomPeer( peers_json.Answer, peers_tried );
+                                if ( peer[ 0 ] === 'peer_is_good' ) {
+                                    good_peers.push( peer );
+                                    peers_tried.push( peer[ 1 ] );
+                                }
+                                else peers_tried = peer;
+                                if ( good_peers.length < 5 ) return loop();
+                            }
+                            await loop();
+
+                            //get the header
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
+                            node_faker.status = `getting current blockheight...`;
+                            var formatted_command = {
+                                "id": node_faker.getRand( 8 ),
+                                "method": "blockchain.headers.subscribe",
+                                "params": [],
+                            }
+                            var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                            response_from_server = JSON.parse( response_from_server );
+                            var blockheight = response_from_server.result.height;
+
+                            //list your peers
+                            var peers = [];
+                            var current_block = blockheight;
+                            good_peers.forEach( peer => peers.push({
+                                "addr": peer[ 2 ],
+                                "subver": peer[ 3 ],
+                                "conntime": Math.floor( Date.now() / 1000 ) - Math.floor( Math.random() * 7200 ),
+                                "startingheight": blockheight - 12,
+                            }) );
+
+                            node_faker.status = "";
+                            return peers;
+                        }
                         if ( command === "getnetworkinfo" ) {
                             node_faker.status = "";
                             return {
@@ -839,10 +920,6 @@
                             }
                             var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
                             response_from_server = JSON.parse( response_from_server );
-
-                            //extract info from the header
-                            var header = response_from_server.result.hex;
-                            var parsed_header = node_faker.parseHeader( header );
                             var blockheight = response_from_server.result.height;
 
                             node_faker.status = "";
@@ -1095,6 +1172,7 @@
                 <li>estimatefee nblocks</li>
                 <li>estimatesmartfee conf_target ( "estimate_mode" )</li>
                 <li>uptime</li>
+                <li>getpeerinfo</li>
                 <li>getnetworkinfo</li>
                 <li>validateaddress "address"</li>
                 <li>getchaintxstats</li>
