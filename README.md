@@ -59,5 +59,5 @@ For getrawtransaction, these additional caveats apply: verbosity cannot be set t
 - Find out what parts of getchaintxstats spruned imlemented and implement those
 - Find out what parts of getmininginfo spruned imlemented and implement those
 - Find out what parts of getnettotals spruned imlemented and implement those
-- Find out why spruned implemented optional support for getmempoolinfo, and if it is needed, try to do something similar to what he did
-- Find out why spruned implemented optional support for getrawmempool, and if it is needed, try to do something similar to what he did
+- Find out why spruned implemented optional support for getmempoolinfo, and if it is needed, try to do something similar to what they did
+- Find out why spruned implemented optional support for getrawmempool, and if it is needed, try to do something similar to what they did
