@@ -267,6 +267,7 @@
                             return "unknown error";
                         }
                         if ( command === "getblockchaininfo" ) {
+                            console.log( 0 );
                             if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             //get the header
@@ -277,13 +278,16 @@
                             }
                             var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
                             response_from_server = JSON.parse( response_from_server );
+                            console.log( 1 );
                             // var response_from_server = {result: { height: 926182, hex: "00e0c420db0805c816f368b5036a2bbda38184bb28e35331b600010000000000000000006796898b301c511dd441870f9084896c4ff1b556ba886035ae5890f6c3ed086154492f69a0e201176d1d04e5" } }
 
                             //extract info from the header
                             var header = response_from_server.result.hex;
                             var parsed_header = node_faker.parseHeader( header );
                             var blockheight = response_from_server.result.height;
+                            console.log( 2 );
                             var median_timestamp = await node_faker.getMTP( socket, blockheight, parsed_header.timestamp );
+                            console.log( 3 );
                             var midhash = await node_faker.sha256( node_faker.hexToBytes( header ) );
                             var revhash = await node_faker.sha256( node_faker.hexToBytes( midhash ) );
                             var blockhash = node_faker.reverseHexString( revhash );
@@ -291,9 +295,11 @@
                             var exponent = parseInt( nbits.substring( 0, 2 ), 16 );
                             var exponent_minus_three = exponent - 3;
                             var exponent_as_length = ( exponent_minus_three * 2 );
+                            console.log( 4 );
                             var current_target = nbits.substring( 2 ).padEnd( exponent_as_length, "0" ).padStart( 64, "0" );
                             var max_difficulty = "00000000FFFF0000000000000000000000000000000000000000000000000000";
                             var difficulty = Number( BigInt( `0x${max_difficulty}` ) / BigInt( `0x${current_target}` ) );
+                            console.log( 5 );
 
                             //return the results
                             node_faker.status = "";
@@ -413,7 +419,7 @@
                                 "height": height_of_this_block,
                                 "version": parseInt( parsed_header.version, 16 ),
                                 "versionHex": parsed_header.version,
-                                "merkleroot": parsed_header.merkleroot,
+                                "merkleroot": parsed_header.merkle_root,
                                 "time": parsed_header.timestamp,
                                 "mediantime": median_timestamp,
                                 "nonce": parseInt( parsed_header.nonce, 16 ),
@@ -487,30 +493,37 @@
                             return blockhash;
                         }
                         if ( command === "getblockheader" ) {
-                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
-
+                            //prepare the parameters
                             var blockhash = command_arr[ 1 ];
                             blockhash = blockhash.replaceAll( '"', "" ).replaceAll( "'", "" );
-                            var endpoint = `/block/${blockhash}/raw`;
-                            node_faker.status = "downloading block...";
-                            var block = await node_faker.queryEsploraServer( esplora_server, endpoint );
+                            if ( command_arr[ 2 ] && command_arr[ 2 ] === "true" ) command_arr[ 2 ] = 1;
+                            if ( command_arr[ 2 ] && command_arr[ 2 ] === "false" ) command_arr[ 2 ] = 0;
                             var verbosity = Number( command_arr[ 2 ] );
-                            var header = block.substring( 0, 160 );
-                            // var endpoint = `/block/${blockhash}/header`;
-                            // var header = await node_faker.queryEsploraServer( esplora_server, endpoint );
+
+                            //get the header
+                            var endpoint = `/block/${blockhash}/header`;
+                            node_faker.status = "downloading header...";
+                            var header = await node_faker.queryEsploraServer( esplora_server, endpoint );
+
+                            //return the header, if that is all the user asked for
                             if ( typeof verbosity === "number" && verbosity === 0 ) {
                                 node_faker.status = "";
                                 return header;
                             }
 
-                            //get the height of this block so we can query electrum servers about it and populate our result with info about its height
+                            if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
+
+                            //get the num of txs and height
+                            var endpoint = `/block/${blockhash}`;
+                            node_faker.status = "downloading block details...";
+                            var block_details = await node_faker.queryEsploraServer( esplora_server, endpoint );
+                            var num_of_txs = block_details.tx_count;
+                            var height_of_this_block = block_details.height;
+
+                            //get the blockhash
                             var midhash = await node_faker.sha256( node_faker.hexToBytes( header ) );
                             var revhash = await node_faker.sha256( node_faker.hexToBytes( midhash ) );
                             var blockhash = node_faker.reverseHexString( revhash );
-                            var endpoint = `/block/${blockhash}/status`;
-                            node_faker.status = "getting blockheight...";
-                            var data = await node_faker.queryEsploraServer( esplora_server, endpoint );
-                            var height_of_this_block = data.height;
 
                             //get info about the current blockheight, and calculate the number of confs the relevant block has
                             var formatted_command = {
@@ -554,11 +567,6 @@
                             var max_difficulty = "00000000FFFF0000000000000000000000000000000000000000000000000000";
                             var difficulty = Number( BigInt( `0x${max_difficulty}` ) / BigInt( `0x${current_target}` ) );
 
-                            //get the block so we can get info about its transactions
-                            //get the number of transactions from the block
-                            var possible_csize = block.substring( 160, 160 + 18 );
-                            var num_of_txs = node_faker.decodeCompactSize( possible_csize ).size
-
                             //return the requested data
                             node_faker.status = "";
                             return {
@@ -567,7 +575,7 @@
                                 "height": height_of_this_block,
                                 "version": parseInt( parsed_header.version, 16 ),
                                 "versionHex": parsed_header.version,
-                                "merkleroot": parsed_header.merkleroot,
+                                "merkleroot": parsed_header.merkle_root,
                                 "time": parsed_header.timestamp,
                                 "mediantime": median_timestamp,
                                 "nonce": parseInt( parsed_header.nonce, 16 ),
