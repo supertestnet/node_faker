@@ -22,6 +22,7 @@ Also, I used to use a project called [spruned](https://github.com/gdassori/sprun
 - Download the index.js file and put it in your node_faker directory (or whatever you called it)
 - Run the app with `node index.js`
 - Voila! You can interact with it using bitcoin-cli -- if you're okay with the fact that a lot of commands don't work
+- I also tested that LND can run on top of it. It's very slow. I did some napkin math to guess that it would probably take LND more than 3 days to do its initial blockscan, which I think is part of how it builds its channel graph. So it's a bad idea to run LND on top of this, but it would probably work, with some patience.
 
 # General caveats
 - This app is not fast as a full node because internet download is slower than a read from disk
