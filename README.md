@@ -61,6 +61,7 @@ Also, the app only supports some bitcoin-cli commands for now; namely, these one
 - getnettotals
 - getmempoolinfo
 - getrawmempool
+- getdeploymentinfo
 
 # Command-specific caveats
 
@@ -95,3 +96,5 @@ For getnetworkinfo, connections are always 5 and "warnings" is always an array c
 For getmempoolinfo, the app always returns info about an empty mempool, just as if bitcoin core is running in blocksonly mode
 
 For getrawmempool, the app always returns an empty array, just as if bitcoin core is running in blocksonly mode
+
+For getdeployment info, any parameters are ignored, as I only partially implemented this function to make my nodejs app work with LND, and it was enough to mostly just return a json object saying the node supports taproot
