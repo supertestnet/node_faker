@@ -326,6 +326,8 @@ var node_faker = {
                 }
             }
             if ( command === "getdeploymentinfo" ) {
+                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
+
                 //get the header
                 var formatted_command = {
                     "id": node_faker.getRand( 8 ),
