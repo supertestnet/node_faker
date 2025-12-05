@@ -61,7 +61,17 @@ var node_faker = {
     },
     queryEsploraServer: async ( server, endpoint ) => {
         if ( !server || !endpoint ) return 'you forgot to include a server or an endpoint';
-        var data = await fetch( `${server}${endpoint}` );
+        var loop = async () => {
+            var data = null;
+            try {
+                data = await fetch( `${server}${endpoint}` );
+            } catch ( e ) {}
+            if ( data ) return data;
+            console.log( 'retrying...' );
+            await node_faker.waitSomeTime( 200 );
+            return loop();
+        }
+        var data = await loop();
         if ( endpoint.includes( "/block/" ) && endpoint.includes( "/raw" ) ) {
             var blob = await data.blob();
             var block = await node_faker.blobToHex( blob );
@@ -1170,6 +1180,18 @@ var electrum_server = electrum_servers[ Math.floor( Math.random() * electrum_ser
 var esplora_server = esplora_servers[ Math.floor( Math.random() * esplora_servers.length ) ];
 var socket = null;
 var cache = {}
+var cacheCleaner = async () => {
+    Object.keys( cache ).forEach( command => {
+        var now = Math.floor( Date.now() / 1000 );
+        var cutoff = now - 600;
+        if ( cache[ command ][ 0 ] < cutoff ) {
+            delete cache[ command ];
+        }
+    });
+    await node_faker.waitSomeTime( 8000 );
+    cacheCleaner();
+}
+cacheCleaner();
 
 var sendResponse = ( response, data, statusCode, content_type ) => {
     if ( response.finished ) return;
@@ -1205,19 +1227,19 @@ var requestListener = async function( request, response ) {
                     console.log( command );
                     var result = null;
                     var used_cache = false;
-                    if ( command.includes( "getblockchaininfo" ) && cache.hasOwnProperty( "getblockchaininfo" ) ) {
+                    if ( cache.hasOwnProperty( command ) ) {
                         var now = Math.floor( Date.now() / 1000 );
-                        if ( cache.getblockchaininfo[ 0 ] + 300 > now ) {
-                            result = cache.getblockchaininfo[ 1 ];
+                        if ( cache[ command ][ 0 ] + 300 > now ) {
+                            result = cache[ command ][ 1 ];
                             used_cache = true;
                             console.log( 'used cache' );
                         }
                     }
                     if ( !result ) result = await node_faker.processCommand( command );
-                    if ( command.includes( "getblockchaininfo" ) && !used_cache ) {
+                    if ( !used_cache && !command.includes( "getblock " ) ) {
                         var now = Math.floor( Date.now() / 1000 );
-                        if ( !cache.hasOwnProperty( "getblockchaininfo" ) ) cache.getblockchaininfo = [
-                            Math.floor( Date.now() / 1000 ),
+                        cache[ command ] = [
+                            now,
                             result,
                         ];
                         console.log( `created or updated cache` );
