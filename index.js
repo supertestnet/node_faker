@@ -255,7 +255,7 @@ var node_faker = {
     blobToHex: async blob => {
         var buf = await blob.arrayBuffer();
         var arr = new Uint8Array( buf );
-        return node_faker.bytesToHex( arr )
+        return node_faker.bytesToHex( arr );
     },
     processCommand: async command => {
         try {
@@ -310,7 +310,7 @@ var node_faker = {
                     "verificationprogress": 1,
                     "initialblockdownload": false,
                     "chainwork": "0".repeat( 64 ),
-                    "size_on_disk": "unknown",
+                    "size_on_disk": 600000000000,
                     "pruned": false,
                     "warnings": [ "node faker, emulating bitcoind, incomplete data" ],
                 }
@@ -819,14 +819,14 @@ var node_faker = {
             if ( command === "getnetworkinfo" ) {
                 node_faker.status = "";
                 return {
-                    "version": 150100,
+                    "version": 260000,
                     "subversion": "/node faker/",
                     "protocolversion": 70015,
                     "localservices": "000000000000000d",
                     "localrelay": false,
                     "timeoffset": 0,
                     "networkactive": false,
-                    "connections": 0,
+                    "connections": 5,
                     "networks": [
                         {
                             "name": "ipv4",
@@ -1131,15 +1131,40 @@ var requestListener = async function( request, response ) {
         collectData(request, async formattedData => {
             if ( parts.pathname == "/" || parts.pathname == "" ) {
                 var json = JSON.parse( formattedData );
-                var command = `${json.method} ${json.params.join( " " )}`;
-                var result = await node_faker.processCommand( command );
-                var returnable = JSON.stringify({
-                  result,
-                  "error": null,
-                  "id": json.id,
-                });
-                returnable = returnable + "\n";
-                return sendResponse( response, returnable, 200, {'Content-Type': 'application/json'} );
+                if ( !json[ 0 ] ) {
+                    var command = `${json.method} ${json.params.join( " " )}`;
+                    var result = await node_faker.processCommand( command );
+                    if ( result === "unknown error" ) var returnable = JSON.stringify({
+                        result: null,
+                        error: {
+                            code: -32601,
+                            message: "Method not found",
+                        },
+                        id: json.id,
+                    });
+                    else var returnable = JSON.stringify({
+                      result,
+                      "error": null,
+                      "id": json.id,
+                    });
+                    returnable = returnable + "\n";
+                    return sendResponse( response, returnable, 200, {'Content-Type': 'application/json'} );
+                } else {
+                    var formatted_results = [];
+                    var i; for ( i=0; i<json.length; i++ ) {
+                        var item = json[ i ];
+                        var command = `${item.method} ${item.params.join( " " )}`;
+                        var result = await node_faker.processCommand( command );
+                        var formatted_result = {
+                          result,
+                          "error": null,
+                          "id": item.id,
+                        }
+                        formatted_results.push( formatted_result );
+                    }
+                    var returnable = JSON.stringify( formatted_results ) + "\n";
+                    return sendResponse( response, returnable, 200, {'Content-Type': 'application/json'} );
+                }
             }
             var html_404 = `
                 <p>404 page not found</p>
