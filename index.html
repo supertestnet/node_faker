@@ -9,14 +9,15 @@
                 status: "",
                 uptime: 0,
                 waitWhenParsingTxs: false,
-                getRand: num_of_bytes => window.crypto.getRandomValues( new Uint8Array( num_of_bytes ) ).toHex(),
+                getRand: num_of_bytes => node_faker.bytesToHex( crypto.getRandomValues( new Uint8Array( num_of_bytes ) ) ),
                 waitSomeTime: num => new Promise( resolve => setTimeout( resolve, num ) ),
                 hexToBytes: hex => Uint8Array.from( hex.match( /.{1,2}/g ).map( byte => parseInt( byte, 16 ) ) ),
+                bytesToHex: bytes => bytes.reduce( ( str, byte ) => str + byte.toString( 16 ).padStart( 2, "0" ), "" ),
                 reverseHexString: s => s.match( /[a-fA-F0-9]{2}/g ).reverse().join( '' ),
                 sha256: async s => {
                     if ( typeof s == "string" ) s = new TextEncoder().encode( s );
                     var arr = await crypto.subtle.digest( 'SHA-256', s );
-                    return ( new Uint8Array( arr ) ).toHex();
+                    return node_faker.bytesToHex( new Uint8Array( arr ) );
                 },
                 parseHeader: header => {
                     var block_info = {}
@@ -254,7 +255,7 @@
                 blobToHex: async blob => {
                     var buf = await blob.arrayBuffer();
                     var arr = new Uint8Array( buf );
-                    return arr.toHex();
+                    return node_faker.bytesToHex( arr );
                 },
                 processCommand: async command => {
                     try {
@@ -818,7 +819,7 @@
                         if ( command === "getnetworkinfo" ) {
                             node_faker.status = "";
                             return {
-                                "version": 150100,
+                                "version": 260000,
                                 "subversion": "/node faker/",
                                 "protocolversion": 70015,
                                 "localservices": "000000000000000d",
