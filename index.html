@@ -61,7 +61,17 @@
                 },
                 queryEsploraServer: async ( server, endpoint ) => {
                     if ( !server || !endpoint ) return 'you forgot to include a server or an endpoint';
-                    var data = await fetch( `${server}${endpoint}` );
+                    var loop = async () => {
+                        var data = null;
+                        try {
+                            data = await fetch( `${server}${endpoint}` );
+                        } catch ( e ) {}
+                        if ( data ) return data;
+                        console.log( 'retrying...' );
+                        await node_faker.waitSomeTime( 200 );
+                        return loop();
+                    }
+                    var data = await loop();
                     if ( endpoint.includes( "/block/" ) && endpoint.includes( "/raw" ) ) {
                         var blob = await data.blob();
                         var block = await node_faker.blobToHex( blob );
@@ -267,7 +277,6 @@
                             return "unknown error";
                         }
                         if ( command === "getblockchaininfo" ) {
-                            console.log( 0 );
                             if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
 
                             //get the header
