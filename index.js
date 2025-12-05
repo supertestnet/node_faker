@@ -353,12 +353,12 @@ var node_faker = {
                             "active": true,
                             "height": 227931
                         },
-                       "bip66": {
+                        "bip66": {
                             "type": "buried",
                             "active": true,
                             "height": 363725
                         },
-                       "bip65": {
+                        "bip65": {
                             "type": "buried",
                             "active": true,
                             "height": 388381
