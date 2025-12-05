@@ -315,6 +315,70 @@ var node_faker = {
                     "warnings": [ "node faker, emulating bitcoind, incomplete data" ],
                 }
             }
+            if ( command === "getdeploymentinfo" ) {
+                //get the header
+                var formatted_command = {
+                    "id": node_faker.getRand( 8 ),
+                    "method": "blockchain.headers.subscribe",
+                    "params": [],
+                }
+                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                response_from_server = JSON.parse( response_from_server );
+
+                //extract info from the header
+                var header = response_from_server.result.hex;
+                var parsed_header = node_faker.parseHeader( header );
+                var blockheight = response_from_server.result.height;
+                var midhash = await node_faker.sha256( node_faker.hexToBytes( header ) );
+                var revhash = await node_faker.sha256( node_faker.hexToBytes( midhash ) );
+                var blockhash = node_faker.reverseHexString( revhash );
+
+                node_faker.status = "";
+                return {
+                    "hash": blockhash,
+                    "height": blockheight,
+                    "deployments": {
+                        "bip34": {
+                            "type": "buried",
+                            "active": true,
+                            "height": 227931
+                        },
+                       "bip66": {
+                            "type": "buried",
+                            "active": true,
+                            "height": 363725
+                        },
+                       "bip65": {
+                            "type": "buried",
+                            "active": true,
+                            "height": 388381
+                        },
+                        "csv": {
+                            "type": "buried",
+                            "active": true,
+                            "height": 419328
+                        },
+                        "segwit": {
+                            "type": "buried",
+                            "active": true,
+                            "height": 481824
+                        },
+                        "taproot": {
+                            "type": "bip9",
+                            "height": 709632,
+                            "active": true,
+                            "bip9": {
+                                "start_time": 1619222400,
+                                "timeout": 1628640000,
+                                "min_activation_height": 709632,
+                                "status": "active",
+                                "since": 709632,
+                                "status_next": "active"
+                            }
+                        }
+                    }
+                }
+            }
             if ( command === "getblock" ) {
                 if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
                 var blockhash = command_arr[ 1 ];
@@ -413,7 +477,7 @@ var node_faker = {
                     "height": height_of_this_block,
                     "version": parseInt( parsed_header.version, 16 ),
                     "versionHex": parsed_header.version,
-                    "merkleroot": parsed_header.merkleroot,
+                    "merkleroot": parsed_header.merkle_root,
                     "time": parsed_header.timestamp,
                     "mediantime": median_timestamp,
                     "nonce": parseInt( parsed_header.nonce, 16 ),
@@ -487,30 +551,37 @@ var node_faker = {
                 return blockhash;
             }
             if ( command === "getblockheader" ) {
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
-
+                //prepare the parameters
                 var blockhash = command_arr[ 1 ];
                 blockhash = blockhash.replaceAll( '"', "" ).replaceAll( "'", "" );
-                var endpoint = `/block/${blockhash}/raw`;
-                node_faker.status = "downloading block...";
-                var block = await node_faker.queryEsploraServer( esplora_server, endpoint );
+                if ( command_arr[ 2 ] && command_arr[ 2 ] === "true" ) command_arr[ 2 ] = 1;
+                if ( command_arr[ 2 ] && command_arr[ 2 ] === "false" ) command_arr[ 2 ] = 0;
                 var verbosity = Number( command_arr[ 2 ] );
-                var header = block.substring( 0, 160 );
-                // var endpoint = `/block/${blockhash}/header`;
-                // var header = await node_faker.queryEsploraServer( esplora_server, endpoint );
+
+                //get the header
+                var endpoint = `/block/${blockhash}/header`;
+                node_faker.status = "downloading header...";
+                var header = await node_faker.queryEsploraServer( esplora_server, endpoint );
+
+                //return the header, if that is all the user asked for
                 if ( typeof verbosity === "number" && verbosity === 0 ) {
                     node_faker.status = "";
                     return header;
                 }
 
-                //get the height of this block so we can query electrum servers about it and populate our result with info about its height
+                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( electrum_server );
+
+                //get the num of txs and height
+                var endpoint = `/block/${blockhash}`;
+                node_faker.status = "downloading block details...";
+                var block_details = await node_faker.queryEsploraServer( esplora_server, endpoint );
+                var num_of_txs = block_details.tx_count;
+                var height_of_this_block = block_details.height;
+
+                //get the blockhash
                 var midhash = await node_faker.sha256( node_faker.hexToBytes( header ) );
                 var revhash = await node_faker.sha256( node_faker.hexToBytes( midhash ) );
                 var blockhash = node_faker.reverseHexString( revhash );
-                var endpoint = `/block/${blockhash}/status`;
-                node_faker.status = "getting blockheight...";
-                var data = await node_faker.queryEsploraServer( esplora_server, endpoint );
-                var height_of_this_block = data.height;
 
                 //get info about the current blockheight, and calculate the number of confs the relevant block has
                 var formatted_command = {
@@ -554,11 +625,6 @@ var node_faker = {
                 var max_difficulty = "00000000FFFF0000000000000000000000000000000000000000000000000000";
                 var difficulty = Number( BigInt( `0x${max_difficulty}` ) / BigInt( `0x${current_target}` ) );
 
-                //get the block so we can get info about its transactions
-                //get the number of transactions from the block
-                var possible_csize = block.substring( 160, 160 + 18 );
-                var num_of_txs = node_faker.decodeCompactSize( possible_csize ).size
-
                 //return the requested data
                 node_faker.status = "";
                 return {
@@ -567,7 +633,7 @@ var node_faker = {
                     "height": height_of_this_block,
                     "version": parseInt( parsed_header.version, 16 ),
                     "versionHex": parsed_header.version,
-                    "merkleroot": parsed_header.merkleroot,
+                    "merkleroot": parsed_header.merkle_root,
                     "time": parsed_header.timestamp,
                     "mediantime": median_timestamp,
                     "nonce": parseInt( parsed_header.nonce, 16 ),
@@ -978,6 +1044,7 @@ var node_faker = {
             node_faker.status = "";
             return "unknown error";
         } catch ( e ) {
+            console.log( e );
             node_faker.status = "";
             return "unknown error";
         }
@@ -1102,6 +1169,7 @@ var electrum_servers = [
 var electrum_server = electrum_servers[ Math.floor( Math.random() * electrum_servers.length ) ];
 var esplora_server = esplora_servers[ Math.floor( Math.random() * esplora_servers.length ) ];
 var socket = null;
+var cache = {}
 
 var sendResponse = ( response, data, statusCode, content_type ) => {
     if ( response.finished ) return;
@@ -1132,37 +1200,65 @@ var requestListener = async function( request, response ) {
             if ( parts.pathname == "/" || parts.pathname == "" ) {
                 var json = JSON.parse( formattedData );
                 if ( !json[ 0 ] ) {
+                    // console.log( json );
                     var command = `${json.method} ${json.params.join( " " )}`;
-                    var result = await node_faker.processCommand( command );
-                    if ( result === "unknown error" ) var returnable = JSON.stringify({
-                        result: null,
-                        error: {
-                            code: -32601,
-                            message: "Method not found",
-                        },
-                        id: json.id,
-                    });
-                    else var returnable = JSON.stringify({
-                      result,
-                      "error": null,
-                      "id": json.id,
-                    });
+                    console.log( command );
+                    var result = null;
+                    var used_cache = false;
+                    if ( command.includes( "getblockchaininfo" ) && cache.hasOwnProperty( "getblockchaininfo" ) ) {
+                        var now = Math.floor( Date.now() / 1000 );
+                        if ( cache.getblockchaininfo[ 0 ] + 300 > now ) {
+                            result = cache.getblockchaininfo[ 1 ];
+                            used_cache = true;
+                            console.log( 'used cache' );
+                        }
+                    }
+                    if ( !result ) result = await node_faker.processCommand( command );
+                    if ( command.includes( "getblockchaininfo" ) && !used_cache ) {
+                        var now = Math.floor( Date.now() / 1000 );
+                        if ( !cache.hasOwnProperty( "getblockchaininfo" ) ) cache.getblockchaininfo = [
+                            Math.floor( Date.now() / 1000 ),
+                            result,
+                        ];
+                        console.log( `created or updated cache` );
+                    }
+                    // console.log( result );
+                    if ( result === "unknown error" ) {
+                        var returnable = JSON.stringify({
+                            result: null,
+                            error: {
+                                code: -32601,
+                                message: "Method not found",
+                            },
+                            id: json.id,
+                        });
+                        console.log( 88, command );
+                    } else {
+                        var returnable = JSON.stringify({
+                            result,
+                            "error": null,
+                            "id": json.id,
+                        });
+                    }
                     returnable = returnable + "\n";
+                    // console.log( returnable );
                     return sendResponse( response, returnable, 200, {'Content-Type': 'application/json'} );
                 } else {
                     var formatted_results = [];
                     var i; for ( i=0; i<json.length; i++ ) {
                         var item = json[ i ];
                         var command = `${item.method} ${item.params.join( " " )}`;
+                        console.log( command );
                         var result = await node_faker.processCommand( command );
                         var formatted_result = {
-                          result,
-                          "error": null,
-                          "id": item.id,
+                            result,
+                            "error": null,
+                            "id": item.id,
                         }
                         formatted_results.push( formatted_result );
                     }
                     var returnable = JSON.stringify( formatted_results ) + "\n";
+                    // console.log( returnable );
                     return sendResponse( response, returnable, 200, {'Content-Type': 'application/json'} );
                 }
             }
