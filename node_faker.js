@@ -116,7 +116,7 @@ var node_faker = {
                 "method": "blockchain.block.header",
                 "params": [ last_eleven_blocks[ i ] ],
             }
-            var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+            var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
             response_from_server = JSON.parse( response_from_server );
             var temp_parsed_header = node_faker.parseHeader( response_from_server.result );
             last_eleven_timestamps.push( temp_parsed_header.timestamp );
