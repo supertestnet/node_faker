@@ -942,7 +942,7 @@ var node_faker = {
                     "localrelay": false,
                     "timeoffset": 0,
                     "networkactive": false,
-                    "connections": 0,
+                    "connections": 5,
                     "networks": [
                         {
                             "name": "ipv4",
