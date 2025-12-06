@@ -286,7 +286,7 @@ var node_faker = {
                 return "unknown error";
             }
             if ( command === "getblockchaininfo" ) {
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
                 var formatted_command = {
@@ -335,7 +335,7 @@ var node_faker = {
                 }
             }
             if ( command === "getdeploymentinfo" ) {
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
                 var formatted_command = {
@@ -401,7 +401,7 @@ var node_faker = {
                 }
             }
             if ( command === "getblock" ) {
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
                 var blockhash = command_arr[ 1 ];
                 blockhash = blockhash.replaceAll( '"', "" ).replaceAll( "'", "" );
                 var endpoint = `/block/${blockhash}/raw`;
@@ -515,7 +515,7 @@ var node_faker = {
                 }
             }
             if ( command === "getbestblockhash" ) {
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
                 var formatted_command = {
@@ -535,7 +535,7 @@ var node_faker = {
                 return blockhash;
             }
             if ( command === "getblockcount" ) {
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
                 var formatted_command = {
@@ -551,7 +551,7 @@ var node_faker = {
                 return response_from_server.result.height;
             }
             if ( command === "getblockhash" ) {
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
                 var height = Number( command_arr[ 1 ] );
 
                 //get header info about the relevant block
@@ -590,7 +590,7 @@ var node_faker = {
                     return header;
                 }
 
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the num of txs and height
                 var endpoint = `/block/${blockhash}`;
@@ -671,7 +671,7 @@ var node_faker = {
                 var txhash = command_arr[ 1 ];
                 txhash = txhash.replaceAll( '"', "" ).replaceAll( "'", "" );
                 var vout = command_arr[ 2 ];
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the txhex
                 var formatted_command = {
@@ -717,7 +717,7 @@ var node_faker = {
                 var txhash = command_arr[ 1 ];
                 txhash = txhash.replaceAll( '"', "" ).replaceAll( "'", "" );
                 var verbosity = Number( command_arr[ 2 ] );
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the txhex
                 var formatted_command = {
@@ -745,7 +745,7 @@ var node_faker = {
                 return response_from_server.result;
             }
             if ( command === "sendrawtransaction" ) {
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
                 var txhex = command_arr[ 1 ];
                 txhex = txhex.replaceAll( '"', "" ).replaceAll( "'", "" );
 
@@ -770,7 +770,7 @@ var node_faker = {
                     node_faker.status = "";
                     return 'invalid number of arguments';
                 }
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get header info about the relevant block
                 var formatted_command = {
@@ -798,7 +798,7 @@ var node_faker = {
                 economical = economical.toLowerCase().replaceAll( '"', "" ).replaceAll( "'", "" );
                 if ( economical === "economical" ) num_for_query = num_for_query + 3;
 
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get header info about the relevant block
                 var formatted_command = {
@@ -879,7 +879,7 @@ var node_faker = {
                 await loop();
 
                 //get the header
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
                 node_faker.status = `getting current blockheight...`;
                 var formatted_command = {
                     "id": node_faker.getRand( 8 ),
@@ -1002,7 +1002,7 @@ var node_faker = {
                 }
             }
             if ( command === "getmininginfo" ) {
-                if ( !socket || socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
                 var formatted_command = {
