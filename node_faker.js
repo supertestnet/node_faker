@@ -15,8 +15,8 @@ var node_faker = {
         `wss://blackie.c3-soft.com:57004`,
         `wss://electrum.jochen-hoenicke.de:50010`,
     ],
-    electrum_server: node_faker.electrum_servers[ Math.floor( Math.random() * node_faker.electrum_servers.length ) ],
-    esplora_server: node_faker.esplora_servers[ Math.floor( Math.random() * node_faker.esplora_servers.length ) ],
+    electrum_server: null,
+    esplora_server: null,
     socket: null,
     getRand: num_of_bytes => node_faker.bytesToHex( crypto.getRandomValues( new Uint8Array( num_of_bytes ) ) ),
     waitSomeTime: num => new Promise( resolve => setTimeout( resolve, num ) ),
@@ -1172,5 +1172,9 @@ var node_faker = {
             return !!tapscript.Address.decode( address ).script;
         } catch( e ) {return;}
         return;
+    },
+    init: () => {
+        node_faker.electrum_server = node_faker.electrum_servers[ Math.floor( Math.random() * node_faker.electrum_servers.length ) ];
+        node_faker.esplora_server = node_faker.esplora_servers[ Math.floor( Math.random() * node_faker.esplora_servers.length ) ];
     },
 }
