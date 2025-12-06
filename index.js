@@ -1271,7 +1271,6 @@ var requestListener = async function( request, response ) {
                             },
                             id: json.id,
                         });
-                        console.log( 88, command );
                     } else {
                         var returnable = JSON.stringify({
                             result,
