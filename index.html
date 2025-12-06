@@ -125,20 +125,6 @@
                 if ( typeof result === "object" ) result = JSON.stringify( result, false, 4 );
                 $( '.response' ).innerText = result;
             }
-            var esplora_servers = [
-                `https://mempool.space/api`,
-                `https://mempool.guide/api`,
-            ];
-            var electrum_servers = [
-                `wss://horsey.cryptocowboys.net:50004`,
-                `wss://btc.electroncash.dk:60004`,
-                `wss://bitcoin.grey.pw:50004`,
-                `wss://blackie.c3-soft.com:57004`,
-                `wss://electrum.jochen-hoenicke.de:50010`,
-            ];
-            var electrum_server = electrum_servers[ Math.floor( Math.random() * electrum_servers.length ) ];
-            var esplora_server = esplora_servers[ Math.floor( Math.random() * esplora_servers.length ) ];
-            var socket = null;
             node_faker.waitWhenParsingTxs = true;
             node_faker.uptimeLoop();
         </script>
