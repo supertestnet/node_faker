@@ -340,7 +340,7 @@ var node_faker = {
                     "verificationprogress": 1,
                     "initialblockdownload": false,
                     "chainwork": "0".repeat( 64 ),
-                    "size_on_disk": "unknown",
+                    "size_on_disk": 600000000000,
                     "pruned": false,
                     "warnings": [ "node faker, emulating bitcoind, incomplete data" ],
                 }
