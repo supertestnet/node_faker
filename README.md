@@ -104,7 +104,7 @@ For getblock, these additional caveats apply:
 - four of the output types supported by bitcoind (i.e. pubkey, multisig, witness_unknown, and nonstandard) do not get their output type displayed properly in my format; instead I just say `"type": "unknown",` for those, and only support the seven most common ones, namely, pubkeyhash, scripthash, witness_v0_keyhash, witness_v0_scripthash, witness_v1_taproot, anchor, and nulldata
 - the "difficulty" number does not match the difficulty number provided by bitcoind, and I don't know why
 
-For getblockchaininfo, these additional caveats apply: chainwork is always a set of 32 empty bytes, size_on_disk is always unknown, verificationprogress is always 1, initialblockdownload is always false, "pruned" is always false, "warnings" is always an array containing one value that just says node faker is emulating bitcoind and has incomplete data, and "chain" is always mainnet. Also, the "difficulty" number does not match the difficulty number provided by bitcoind, and I don't know why.
+For getblockchaininfo, these additional caveats apply: chainwork is always a set of 32 empty bytes, size_on_disk is always 600 gigabytes, verificationprogress is always 1, initialblockdownload is always false, "pruned" is always false, "warnings" is always an array containing one value that just says node faker is emulating bitcoind and has incomplete data, and "chain" is always mainnet. Also, the "difficulty" number does not match the difficulty number provided by bitcoind, and I don't know why.
 
 For getblockheader, these additional caveats apply: chainwork is always a set of 32 empty bytes, and the "difficulty" number does not match the difficulty number provided by bitcoind, and I don't know why.
 
