@@ -47,7 +47,18 @@ var node_faker = {
     },
     connectToElectrumServer: async server => {
         console.log( `connecting to ${server}...` );
-        var socket = new WebSocket( server );
+        var num_of_attempts = 0;
+        var loop = async server => {
+            var socket = null;
+            try {
+                socket = new WebSocket( server );
+            } catch ( e ) {num_of_attempts = num_of_attempts + 1}
+            if ( socket ) return socket;
+            console.log( `failed to connect to ${server} ${num_of_attempts} times, retrying...` );
+            await node_faker.waitSomeTime( 2000 );
+            return loop( server );
+        }
+        var socket = await loop( server );
         var isReady = async () => {
             if ( socket.readyState === 1 ) return;
             await node_faker.waitSomeTime( 10 );
