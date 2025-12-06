@@ -313,7 +313,7 @@ var node_faker = {
                 var header = response_from_server.result.hex;
                 var parsed_header = node_faker.parseHeader( header );
                 var blockheight = response_from_server.result.height;
-                var median_timestamp = await node_faker.getMTP( socket, blockheight, parsed_header.timestamp );
+                var median_timestamp = await node_faker.getMTP( node_faker.socket, blockheight, parsed_header.timestamp );
                 var midhash = await node_faker.sha256( node_faker.hexToBytes( header ) );
                 var revhash = await node_faker.sha256( node_faker.hexToBytes( midhash ) );
                 var blockhash = node_faker.reverseHexString( revhash );
@@ -459,7 +459,7 @@ var node_faker = {
 
                 //extract info from the relevant block
                 node_faker.status = "getting median timestamp...";
-                var median_timestamp = await node_faker.getMTP( socket, height_of_this_block, parsed_header.timestamp );
+                var median_timestamp = await node_faker.getMTP( node_faker.socket, height_of_this_block, parsed_header.timestamp );
                 var nbits = parsed_header.difficulty;
                 var exponent = parseInt( nbits.substring( 0, 2 ), 16 );
                 var exponent_minus_three = exponent - 3;
@@ -648,7 +648,7 @@ var node_faker = {
                 //extract data about the header
                 var parsed_header = node_faker.parseHeader( header );
                 node_faker.status = "getting median timestamp...";
-                var median_timestamp = await node_faker.getMTP( socket, height_of_this_block, parsed_header.timestamp );
+                var median_timestamp = await node_faker.getMTP( node_faker.socket, height_of_this_block, parsed_header.timestamp );
                 var nbits = parsed_header.difficulty;
                 var exponent = parseInt( nbits.substring( 0, 2 ), 16 );
                 var exponent_minus_three = exponent - 3;
