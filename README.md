@@ -29,6 +29,7 @@ Once you've got it all installed, the api is very easy:
 (async()=>{
     node_faker.init();
     var result = await node_faker.processCommand( 'getblockhash 500000' );
+    console.log( result );
 })();
 ```
 The `processCommand()` method accepts any of the supported commands listed below, in a similar format to how you might use them in a real instance of bitcoin core. The init() command must be passed once, on startup.
