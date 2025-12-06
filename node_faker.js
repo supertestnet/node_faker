@@ -1176,5 +1176,6 @@ var node_faker = {
     init: () => {
         node_faker.electrum_server = node_faker.electrum_servers[ Math.floor( Math.random() * node_faker.electrum_servers.length ) ];
         node_faker.esplora_server = node_faker.esplora_servers[ Math.floor( Math.random() * node_faker.esplora_servers.length ) ];
+        node_faker.uptimeLoop();
     },
 }
