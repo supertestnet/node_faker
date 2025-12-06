@@ -347,7 +347,7 @@ var node_faker = {
                     "verificationprogress": 1,
                     "initialblockdownload": false,
                     "chainwork": "0".repeat( 64 ),
-                    "size_on_disk": "unknown",
+                    "size_on_disk": 600000000000,
                     "pruned": false,
                     "warnings": [ "node faker, emulating bitcoind, incomplete data" ],
                 }
@@ -1246,22 +1246,20 @@ var requestListener = async function( request, response ) {
                     console.log( command );
                     var result = null;
                     var used_cache = false;
-                    if ( cache.hasOwnProperty( command ) ) {
+                    if ( cache.hasOwnProperty( command ) && !command.includes( "uptime" ) ) {
                         var now = Math.floor( Date.now() / 1000 );
                         if ( cache[ command ][ 0 ] + 300 > now ) {
                             result = cache[ command ][ 1 ];
                             used_cache = true;
-                            console.log( 'used cache' );
                         }
                     }
                     if ( !result ) result = await node_faker.processCommand( command );
-                    if ( !used_cache && !command.includes( "getblock " ) ) {
+                    if ( !used_cache && !command.includes( "getblock " ) && !command.includes( "uptime" ) ) {
                         var now = Math.floor( Date.now() / 1000 );
                         cache[ command ] = [
                             now,
                             result,
                         ];
-                        console.log( `created or updated cache` );
                     }
                     // console.log( result );
                     if ( result === "unknown error" ) {
