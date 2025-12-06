@@ -116,7 +116,7 @@ var node_faker = {
                 "method": "blockchain.block.header",
                 "params": [ last_eleven_blocks[ i ] ],
             }
-            var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+            var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
             response_from_server = JSON.parse( response_from_server );
             var temp_parsed_header = node_faker.parseHeader( response_from_server.result );
             last_eleven_timestamps.push( temp_parsed_header.timestamp );
@@ -305,7 +305,7 @@ var node_faker = {
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 // var response_from_server = {result: { height: 926182, hex: "00e0c420db0805c816f368b5036a2bbda38184bb28e35331b600010000000000000000006796898b301c511dd441870f9084896c4ff1b556ba886035ae5890f6c3ed086154492f69a0e201176d1d04e5" } }
 
@@ -354,7 +354,7 @@ var node_faker = {
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
 
                 //extract info from the header
@@ -438,7 +438,7 @@ var node_faker = {
                     "params": [],
                 }
                 node_faker.status = "getting blockheight of entire blockchain...";
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 var blockheight = response_from_server.result.height;
                 var confirmations = ( blockheight - height_of_this_block ) + 1;
@@ -449,7 +449,7 @@ var node_faker = {
                 //     "method": "blockchain.block.header",
                 //     "params": [ height_of_this_block ],
                 // }
-                // var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                // var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 // response_from_server = JSON.parse( response_from_server );
                 // var parsed_header = node_faker.parseHeader( response_from_server.result );
 
@@ -534,7 +534,7 @@ var node_faker = {
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
 
                 //return the header's hash
@@ -554,7 +554,7 @@ var node_faker = {
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
 
                 //return the header's height
@@ -571,7 +571,7 @@ var node_faker = {
                     "method": "blockchain.block.header",
                     "params": [ height ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
 
                 //return the header's hash
@@ -622,7 +622,7 @@ var node_faker = {
                     "params": [],
                 }
                 node_faker.status = "getting current blockheight...";
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 var blockheight = response_from_server.result.height;
                 var confirmations = ( blockheight - height_of_this_block ) + 1;
@@ -637,7 +637,7 @@ var node_faker = {
                         "params": [ height_of_this_block + 1 ],
                     }
                     node_faker.status = "checking for next block...";
-                    var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                    var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                     response_from_server = JSON.parse( response_from_server );
                     var next_header = response_from_server.result;
                     var midhash = await node_faker.sha256( node_faker.hexToBytes( next_header ) );
@@ -690,7 +690,7 @@ var node_faker = {
                     "method": "blockchain.transaction.get",
                     "params": [ txhash, true ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 var txdata = response_from_server.result;
                 var confirmations = txdata.confirmations || 0;
@@ -701,7 +701,7 @@ var node_faker = {
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
 
                 //get the header hash
@@ -736,7 +736,7 @@ var node_faker = {
                     "method": "blockchain.transaction.get",
                     "params": [ txhash, true ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
                     node_faker.status = "";
@@ -766,7 +766,7 @@ var node_faker = {
                     "method": "blockchain.transaction.broadcast",
                     "params": [ txhex ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
                     node_faker.status = "";
@@ -789,7 +789,7 @@ var node_faker = {
                     "method": "blockchain.estimatefee",
                     "params": [ nblocks ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
                     node_faker.status = "";
@@ -817,7 +817,7 @@ var node_faker = {
                     "method": "blockchain.estimatefee",
                     "params": [ nblocks ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
                     node_faker.status = "";
@@ -897,7 +897,7 @@ var node_faker = {
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 var blockheight = response_from_server.result.height;
 
@@ -1021,7 +1021,7 @@ var node_faker = {
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
                 response_from_server = JSON.parse( response_from_server );
                 var blockheight = response_from_server.result.height;
 
