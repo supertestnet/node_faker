@@ -68,11 +68,11 @@ var node_faker = {
         console.log( `connected` );
         return socket;
     },
-    queryElectrumServer: async ( socket, json ) => {
+    queryElectrumServer: async ( socket, json, msg_id ) => {
         if ( !json ) return 'you forgot to include a command';
         return new Promise( async resolve => {
             var handleFunction = async message => {
-                resolve( message.data );
+                if ( message.data.includes( msg_id ) ) resolve( message.data );
                 socket.removeEventListener( 'message', handleFunction );
             }
             socket.addEventListener( 'message', handleFunction );
@@ -111,13 +111,15 @@ var node_faker = {
         var last_eleven_timestamps = [first_timestamp];
         var i; for ( i=blockheight_minus_one; i>blockheight_minus_one-10;i--) last_eleven_blocks.push( i );
         var i; for ( i=0; i<last_eleven_blocks.length; i++ ) {
+            var msg_id = node_faker.getRand( 8 );
             var formatted_command = {
-                "id": node_faker.getRand( 8 ),
+                "id": msg_id,
                 "method": "blockchain.block.header",
                 "params": [ last_eleven_blocks[ i ] ],
             }
-            var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command );
+            var response_from_server = await node_faker.queryElectrumServer( socket, formatted_command, msg_id );
             response_from_server = JSON.parse( response_from_server );
+            if ( !response_from_server.result || typeof response_from_server.result !== "string" || response_from_server.result.length !== 160 ) console.log( 88, last_eleven_blocks[ i ], response_from_server );
             var temp_parsed_header = node_faker.parseHeader( response_from_server.result );
             last_eleven_timestamps.push( temp_parsed_header.timestamp );
         }
@@ -300,12 +302,13 @@ var node_faker = {
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 // var response_from_server = {result: { height: 926182, hex: "00e0c420db0805c816f368b5036a2bbda38184bb28e35331b600010000000000000000006796898b301c511dd441870f9084896c4ff1b556ba886035ae5890f6c3ed086154492f69a0e201176d1d04e5" } }
 
@@ -349,12 +352,13 @@ var node_faker = {
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
 
                 //extract info from the header
@@ -432,24 +436,26 @@ var node_faker = {
                 var height_of_this_block = data.height;
 
                 //get info about the current blockheight, and calculate the number of confs the relevant block has
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
                 node_faker.status = "getting blockheight of entire blockchain...";
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 var blockheight = response_from_server.result.height;
                 var confirmations = ( blockheight - height_of_this_block ) + 1;
 
                 // //get header info about the relevant block
+                // var msg_id = node_faker.getRand( 8 );
                 // var formatted_command = {
-                //     "id": node_faker.getRand( 8 ),
+                //     "id": msg_id,
                 //     "method": "blockchain.block.header",
                 //     "params": [ height_of_this_block ],
                 // }
-                // var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                // var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 // response_from_server = JSON.parse( response_from_server );
                 // var parsed_header = node_faker.parseHeader( response_from_server.result );
 
@@ -529,12 +535,13 @@ var node_faker = {
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
 
                 //return the header's hash
@@ -549,12 +556,13 @@ var node_faker = {
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
 
                 //return the header's height
@@ -566,12 +574,13 @@ var node_faker = {
                 var height = Number( command_arr[ 1 ] );
 
                 //get header info about the relevant block
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.block.header",
                     "params": [ height ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
 
                 //return the header's hash
@@ -616,13 +625,14 @@ var node_faker = {
                 var blockhash = node_faker.reverseHexString( revhash );
 
                 //get info about the current blockheight, and calculate the number of confs the relevant block has
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
                 node_faker.status = "getting current blockheight...";
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 var blockheight = response_from_server.result.height;
                 var confirmations = ( blockheight - height_of_this_block ) + 1;
@@ -631,13 +641,14 @@ var node_faker = {
                 var next_blockhash = undefined;
                 try {
                     if ( confirmations === 1 ) throw( 'no next block query needed' );
+                    var msg_id = node_faker.getRand( 8 );
                     var formatted_command = {
-                        "id": node_faker.getRand( 8 ),
+                        "id": msg_id,
                         "method": "blockchain.block.header",
                         "params": [ height_of_this_block + 1 ],
                     }
                     node_faker.status = "checking for next block...";
-                    var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                    var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                     response_from_server = JSON.parse( response_from_server );
                     var next_header = response_from_server.result;
                     var midhash = await node_faker.sha256( node_faker.hexToBytes( next_header ) );
@@ -685,23 +696,25 @@ var node_faker = {
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the txhex
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.transaction.get",
                     "params": [ txhash, true ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 var txdata = response_from_server.result;
                 var confirmations = txdata.confirmations || 0;
 
                 //get the best block header
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
 
                 //get the header hash
@@ -731,12 +744,13 @@ var node_faker = {
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the txhex
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.transaction.get",
                     "params": [ txhash, true ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
                     node_faker.status = "";
@@ -761,12 +775,13 @@ var node_faker = {
                 txhex = txhex.replaceAll( '"', "" ).replaceAll( "'", "" );
 
                 //get header info about the relevant block
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.transaction.broadcast",
                     "params": [ txhex ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
                     node_faker.status = "";
@@ -784,12 +799,13 @@ var node_faker = {
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get header info about the relevant block
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.estimatefee",
                     "params": [ nblocks ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
                     node_faker.status = "";
@@ -812,12 +828,13 @@ var node_faker = {
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get header info about the relevant block
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.estimatefee",
                     "params": [ nblocks ],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 if ( response_from_server.hasOwnProperty( "error" ) && response_from_server.error.hasOwnProperty( "message" ) && response_from_server.error.message ) {
                     node_faker.status = "";
@@ -892,12 +909,13 @@ var node_faker = {
                 //get the header
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
                 node_faker.status = `getting current blockheight...`;
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 var blockheight = response_from_server.result.height;
 
@@ -1012,16 +1030,41 @@ var node_faker = {
                     "errors": "node faker, emulating bitcoind, incomplete data"
                 }
             }
+            if ( command === "getindexinfo" ) {
+                //get the header
+                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                node_faker.status = `getting current blockheight...`;
+                var msg_id = node_faker.getRand( 8 );
+                var formatted_command = {
+                    "id": msg_id,
+                    "method": "blockchain.headers.subscribe",
+                    "params": [],
+                }
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
+                response_from_server = JSON.parse( response_from_server );
+                var blockheight = response_from_server.result.height;
+
+                node_faker.status = "";
+                return {
+                    "txindex": {
+                        "name": "txindex",
+                        "synced": true,
+                        "best_block_height": blockheight,
+                        "error": "",
+                    }
+                }
+            }
             if ( command === "getmininginfo" ) {
                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
 
                 //get the header
+                var msg_id = node_faker.getRand( 8 );
                 var formatted_command = {
-                    "id": node_faker.getRand( 8 ),
+                    "id": msg_id,
                     "method": "blockchain.headers.subscribe",
                     "params": [],
                 }
-                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command );
+                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                 response_from_server = JSON.parse( response_from_server );
                 var blockheight = response_from_server.result.height;
 
