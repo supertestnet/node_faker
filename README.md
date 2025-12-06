@@ -15,7 +15,7 @@ For two main reasons. One is that when working on some of my other projects I oc
 Also, I used to use a project called [spruned](https://github.com/gdassori/spruned), which I think means "super pruned." It tried to emulate bitcoind's json api, except instead of storing the blockchain on disk, it requested block data and transaction data on-the-fly from bitcoin nodes and electrum nodes. This allowed it to support software like lnd, cln, btc-rpc-explorer, and even bitcoin-cli, by simply "pretending" to be a bitcoin node. It was actually (mostly) just an electrum client, but software that *interacted* with it couldn't tell the difference, because it gave the same responses a real bitcoin node would. I think that's very cool, but it no longer seems to work for me, and I figured I could (mostly) recreate it in the browser. So I did.
 
 # Instructions for using the api
-The app has one dependency, which is taproot.js. Install both in your webapp like this:
+The app has one dependency, which is tapscript.js. Install tapscript.js and node_faker.js in your webapp like this:
 
 ```html
 <script src="https://unpkg.com/@cmdcode/tapscript@latest"></script>
