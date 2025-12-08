@@ -295,6 +295,7 @@ var node_faker = {
         return node_faker.bytesToHex( arr );
     },
     processCommand: async command => {
+        if ( !node_faker.electrum_server || !node_faker.esplora_server ) node_faker.init();
         try {
             var command_arr = command.split( " " );
             if ( command_arr[ 0 ] === "bitcoin-cli" ) command_arr.splice( 0, 1 );
@@ -1310,4 +1311,3 @@ var requestListener = async function( request, response ) {
 
 var server = http.createServer( requestListener );
 server.listen( 8332 );
-node_faker.init();
