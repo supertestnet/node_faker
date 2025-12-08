@@ -1006,6 +1006,108 @@ var node_faker = {
                         "errors": "node faker, emulating bitcoind, incomplete data"
                     }
                 }
+                if ( command === "scantxoutset" ) {
+                    var action = command_arr[ 1 ];
+                    var address = command_arr[ 2 ];
+                    if ( !action || !address ) returnable = 'invalid number of arguments';
+                    else {
+                        action = action.replaceAll( '"', "" ).replaceAll( "'", "" );
+                        if ( action !== "start" ) returnable = `error: only the "start" action is permitted in this implementation`;
+                        else {
+                            if ( !address.startsWith( `'["addr(` ) || !address.endsWith( `)"]'` ) ) returnable = `error: this implementation only allows one search parameter and it must be a single bitcoin address formatted exactly as in the following example: '["addr(bc1qw4c8qlskzhj0zhlj5z6yww5gg27kgzhnf7c5yq)"]' -- and note that all four quotation marks, ' and " and " and ', must appear in exactly the same order as they are in that example -- only the address itself may change`;
+                            else {
+                                //get the header
+                                node_faker.status = "getting the header...";
+                                if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
+                                var msg_id = node_faker.getRand( 8 );
+                                var formatted_command = {
+                                    "id": msg_id,
+                                    "method": "blockchain.headers.subscribe",
+                                    "params": [],
+                                }
+                                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
+                                response_from_server = JSON.parse( response_from_server );
+
+                                //extract info from the header
+                                var header = response_from_server.result.hex;
+                                var blockheight = response_from_server.result.height;
+                                var midhash = await node_faker.sha256( node_faker.hexToBytes( header ) );
+                                var revhash = await node_faker.sha256( node_faker.hexToBytes( midhash ) );
+                                var best_blockhash = node_faker.reverseHexString( revhash );
+
+                                //get unspent outputs
+                                node_faker.status = "getting the unspent outputs...";
+                                address = address.substring( 8 );
+                                address = address.substring( 0, address.length - 4 );
+                                var scripthex = tapscript.Script.encode( tapscript.Address.toScriptPubKey( address ) ).hex.substring( 2 );
+                                var scripthash = await node_faker.sha256( node_faker.hexToBytes( scripthex ) );
+                                var revhash = node_faker.reverseHexString( scripthash );
+                                var msg_id = node_faker.getRand( 8 );
+                                var formatted_command = {
+                                    "id": msg_id,
+                                    "method": "blockchain.scripthash.listunspent",
+                                    "params": [ revhash ],
+                                }
+                                var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
+                                response_from_server = JSON.parse( response_from_server );
+
+                                //eliminate unconfirmed outputs
+                                var utxos = [];
+                                response_from_server.result.forEach( item => {
+                                    if ( !item.height ) return;
+                                    utxos.push( item );
+                                });
+
+                                //prepare unspents array
+                                var total = 0;
+                                var unspents = [];
+                                var i; for ( i=0; i<utxos.length; i++ ) {
+                                    var utxo = utxos[ i ];
+
+                                    //get the txhex
+                                    node_faker.status = `processing utxo ${i + 1} of ${utxos.length}...`;
+                                    var msg_id = node_faker.getRand( 8 );
+                                    var formatted_command = {
+                                        "id": msg_id,
+                                        "method": "blockchain.transaction.get",
+                                        "params": [ utxo.tx_hash, true ],
+                                    }
+                                    var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
+                                    response_from_server = JSON.parse( response_from_server );
+                                    var blockhash = response_from_server.result.blockhash;
+                                    var confirmations = response_from_server.result.confirmations;
+                                    var is_coinbase = response_from_server.result.vin[ 0 ].hasOwnProperty( "coinbase" );
+
+                                    //update total
+                                    total = total + utxo.value;
+
+                                    //push to unspents array
+                                    unspents.push({
+                                        "txid": utxo.tx_hash,
+                                        "vout": utxo.tx_pos,
+                                        "scriptPubKey": scripthex,
+                                        "desc": response_from_server.result.vout[ utxo.tx_pos ].scriptPubKey.desc,
+                                        "amount": node_faker.satsToBitcoin( utxo.value ),
+                                        "coinbase": is_coinbase,
+                                        "height": utxo.height,
+                                        "blockhash": blockhash,
+                                        "confirmations": ( blockheight - utxo.height ) + 1,
+                                    });
+                                    if ( node_faker.waitWhenParsingTxs ) await node_faker.waitSomeTime( 1 );
+                                }
+
+                                returnable = {
+                                    "success": true,
+                                    "txouts": "unknown",
+                                    "height": blockheight,
+                                    "bestblock": best_blockhash,
+                                    "unspents": unspents,
+                                    "total_amount": node_faker.satsToBitcoin( total ),
+                                }
+                            }
+                        }
+                    }
+                }
                 if ( command === "getindexinfo" ) {
                     //get the header
                     if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
