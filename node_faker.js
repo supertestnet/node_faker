@@ -1090,9 +1090,11 @@ var node_faker = {
                 }
             }
             node_faker.status = "";
+            node_faker.in_use = false;
             return returnable;
         } catch ( e ) {
             node_faker.status = "";
+            node_faker.in_use = false;
             return returnable;
         }
     },
