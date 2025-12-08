@@ -1,7 +1,7 @@
 //dependencies:
 //https://unpkg.com/@cmdcode/tapscript@1.5.3/dist/bundle.min.js
 var node_faker = {
-    status: "",
+    status: null,
     in_use: false,
     uptime: 0,
     waitWhenParsingTxs: false,
@@ -426,17 +426,23 @@ var node_faker = {
                     var blockhash = command_arr[ 1 ];
                     blockhash = blockhash.replaceAll( '"', "" ).replaceAll( "'", "" );
                     var endpoint = `/block/${blockhash}/raw`;
-                    node_faker.status = "downloading block...";
+                    node_faker.status = {
+                        command: command_arr.join( " " ),
+                        message: "downloading block...",
+                    };
                     var block = await node_faker.queryEsploraServer( node_faker.esplora_server, endpoint );
 
                     //return the block if the verbose param is 0
                     if ( command_arr[ 2 ] && command_arr[ 2 ] === "0" ) {
-                        node_faker.status = "";
+                        node_faker.status = null;
                         returnable = block;
                     } else {
                         //get the height of this block so we can query electrum servers about it and populate our result with info about its height
                         var endpoint = `/block/${blockhash}/status`;
-                        node_faker.status = "getting blockheight of this block...";
+                        node_faker.status = {
+                            command: command_arr.join( " " ),
+                            message: "getting blockheight of this block...",
+                        };
                         var data = await node_faker.queryEsploraServer( node_faker.esplora_server, endpoint );
                         var height_of_this_block = data.height;
 
@@ -447,7 +453,10 @@ var node_faker = {
                             "method": "blockchain.headers.subscribe",
                             "params": [],
                         }
-                        node_faker.status = "getting blockheight of entire blockchain...";
+                        node_faker.status = {
+                            command: command_arr.join( " " ),
+                            message: "getting blockheight of entire blockchain...",
+                        };
                         var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                         response_from_server = JSON.parse( response_from_server );
                         var blockheight = response_from_server.result.height;
@@ -458,7 +467,10 @@ var node_faker = {
                         var parsed_header = node_faker.parseHeader( header );
 
                         //extract info from the relevant block
-                        node_faker.status = "getting median timestamp...";
+                        node_faker.status = {
+                            command: command_arr.join( " " ),
+                            message: "getting median timestamp...",
+                        };
                         var median_timestamp = await node_faker.getMTP( node_faker.socket, height_of_this_block, parsed_header.timestamp );
                         var nbits = parsed_header.difficulty;
                         var exponent = parseInt( nbits.substring( 0, 2 ), 16 );
@@ -478,7 +490,10 @@ var node_faker = {
                         var txids = [];
                         var i; for ( i=0; i<txs.length; i++ ) {
                             if ( String( i ).endsWith( "00" ) ) {
-                                node_faker.status = `parsing tx ${i} out of ${txs.length}...`;
+                                node_faker.status = {
+                                    command: command_arr.join( " " ),
+                                    message: `parsing tx ${i} out of ${txs.length}...`,
+                                };
                                 //I sometimes wait 1 millisecond so that the status displayer can "catch up" and display my current status
                                 if ( node_faker.waitWhenParsingTxs ) await node_faker.waitSomeTime( 1 );
                             }
@@ -592,7 +607,10 @@ var node_faker = {
 
                     //get the header
                     var endpoint = `/block/${blockhash}/header`;
-                    node_faker.status = "downloading header...";
+                    node_faker.status = {
+                        command: command_arr.join( " " ),
+                        message: "downloading header...",
+                    };
                     var header = await node_faker.queryEsploraServer( node_faker.esplora_server, endpoint );
 
                     //return the header, if that is all the user asked for
@@ -603,7 +621,10 @@ var node_faker = {
 
                         //get the num of txs and height
                         var endpoint = `/block/${blockhash}`;
-                        node_faker.status = "downloading block details...";
+                        node_faker.status = {
+                            command: command_arr.join( " " ),
+                            message: "downloading block details...",
+                        };
                         var block_details = await node_faker.queryEsploraServer( node_faker.esplora_server, endpoint );
                         var num_of_txs = block_details.tx_count;
                         var height_of_this_block = block_details.height;
@@ -620,7 +641,10 @@ var node_faker = {
                             "method": "blockchain.headers.subscribe",
                             "params": [],
                         }
-                        node_faker.status = "getting current blockheight...";
+                        node_faker.status = {
+                            command: command_arr.join( " " ),
+                            message: "getting current blockheight...",
+                        };
                         var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                         response_from_server = JSON.parse( response_from_server );
                         var blockheight = response_from_server.result.height;
@@ -636,7 +660,10 @@ var node_faker = {
                                 "method": "blockchain.block.header",
                                 "params": [ height_of_this_block + 1 ],
                             }
-                            node_faker.status = "checking for next block...";
+                            node_faker.status = {
+                                command: command_arr.join( " " ),
+                                message: "checking for next block...",
+                            };
                             var response_from_server = await node_faker.queryElectrumServer( node_faker.socket, formatted_command, msg_id );
                             response_from_server = JSON.parse( response_from_server );
                             var next_header = response_from_server.result;
@@ -647,7 +674,10 @@ var node_faker = {
 
                         //extract data about the header
                         var parsed_header = node_faker.parseHeader( header );
-                        node_faker.status = "getting median timestamp...";
+                        node_faker.status = {
+                            command: command_arr.join( " " ),
+                            message: "getting median timestamp...",
+                        };
                         var median_timestamp = await node_faker.getMTP( node_faker.socket, height_of_this_block, parsed_header.timestamp );
                         var nbits = parsed_header.difficulty;
                         var exponent = parseInt( nbits.substring( 0, 2 ), 16 );
@@ -833,7 +863,10 @@ var node_faker = {
                 }
                 if ( command === "getpeerinfo" ) {
                     //get list of peers
-                    node_faker.status = "getting list of peers...";
+                    node_faker.status = {
+                        command: command_arr.join( " " ),
+                        message: "getting list of peers...",
+                    };
                     var peers_data = await fetch( 'https://dns.google/resolve?name=seed.btc.petertodd.org&type=A' );
                     var peers_json = await peers_data.json();
 
@@ -876,7 +909,10 @@ var node_faker = {
                     var good_peers = [];
                     var peers_tried = [];
                     var loop = async () => {
-                        node_faker.status = `found peer ${good_peers.length} out of 5...`;
+                        node_faker.status = {
+                            command: command_arr.join( " " ),
+                            message: `found peer ${good_peers.length} out of 5...`,
+                        };
                         var peer = await tryRandomPeer( peers_json.Answer, peers_tried );
                         if ( peer[ 0 ] === 'peer_is_good' ) {
                             good_peers.push( peer );
@@ -889,7 +925,10 @@ var node_faker = {
 
                     //get the header
                     if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
-                    node_faker.status = `getting current blockheight...`;
+                    node_faker.status = {
+                        command: command_arr.join( " " ),
+                        message: `getting current blockheight...`,
+                    };
                     var msg_id = node_faker.getRand( 8 );
                     var formatted_command = {
                         "id": msg_id,
@@ -1017,7 +1056,10 @@ var node_faker = {
                             if ( !address.startsWith( `'["addr(` ) || !address.endsWith( `)"]'` ) ) returnable = `error: this implementation only allows one search parameter and it must be a single bitcoin address formatted exactly as in the following example: '["addr(bc1qw4c8qlskzhj0zhlj5z6yww5gg27kgzhnf7c5yq)"]' -- and note that all four quotation marks, ' and " and " and ', must appear in exactly the same order as they are in that example -- only the address itself may change`;
                             else {
                                 //get the header
-                                node_faker.status = "getting the header...";
+                                node_faker.status = {
+                                    command: command_arr.join( " " ),
+                                    message: "getting the header...",
+                                };
                                 if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
                                 var msg_id = node_faker.getRand( 8 );
                                 var formatted_command = {
@@ -1036,7 +1078,10 @@ var node_faker = {
                                 var best_blockhash = node_faker.reverseHexString( revhash );
 
                                 //get unspent outputs
-                                node_faker.status = "getting the unspent outputs...";
+                                node_faker.status = {
+                                    command: command_arr.join( " " ),
+                                    message: "getting the unspent outputs...",
+                                };
                                 address = address.substring( 8 );
                                 address = address.substring( 0, address.length - 4 );
                                 var scripthex = tapscript.Script.encode( tapscript.Address.toScriptPubKey( address ) ).hex.substring( 2 );
@@ -1065,7 +1110,10 @@ var node_faker = {
                                     var utxo = utxos[ i ];
 
                                     //get the txhex
-                                    node_faker.status = `processing utxo ${i + 1} of ${utxos.length}...`;
+                                    node_faker.status = {
+                                        command: command_arr.join( " " ),
+                                        message: `processing utxo ${i + 1} of ${utxos.length}...`,
+                                    };
                                     var msg_id = node_faker.getRand( 8 );
                                     var formatted_command = {
                                         "id": msg_id,
@@ -1111,7 +1159,10 @@ var node_faker = {
                 if ( command === "getindexinfo" ) {
                     //get the header
                     if ( !node_faker.socket || node_faker.socket.readyState === 3 ) node_faker.socket = await node_faker.connectToElectrumServer( node_faker.electrum_server );
-                    node_faker.status = `getting current blockheight...`;
+                    node_faker.status = {
+                        command: command_arr.join( " " ),
+                        message: `getting current blockheight...`,
+                    };
                     var msg_id = node_faker.getRand( 8 );
                     var formatted_command = {
                         "id": msg_id,
@@ -1192,11 +1243,11 @@ var node_faker = {
                     returnable = [];
                 }
             }
-            node_faker.status = "";
+            node_faker.status = null;
             node_faker.in_use = false;
             return returnable;
         } catch ( e ) {
-            node_faker.status = "";
+            node_faker.status = null;
             node_faker.in_use = false;
             return returnable;
         }
