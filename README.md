@@ -31,13 +31,13 @@ Once you've got it all installed, the api is very easy:
     console.log( result );
 })();
 ```
-The `processCommand()` method accepts any of the supported commands listed below, in a similar format to how you might use them in a real instance of bitcoin core. The init() command must be passed once, on startup.
+The `processCommand()` method accepts any of the supported commands listed below, in a similar format to how you might use them in a real instance of bitcoind.
 
 **A note about status messages**  
 
 Since this app is often slow to return results, users might get impatient waiting for a command to return. Status messages can help here; hence there is a helper tool at node_faker.status which gives status updates while your request is processing, and you might want to display those status updates to your users. But *one* method in this app -- `getblock` -- doesn't always post status messages correctly when it is processing lots of transactions, due to threading issues.
 
-A workaround for this is to run the following command before you call `processCommand()`: `node_faker.waitWhenParsingTxs = true;` -- this makes it so that the `getblock` method occasionally waits a millisecond between processing some transactions, to let the status thread "catch up," which might be helpful if you are displaying status messages for your users. So consider running that command when you call the `init()` method if displaying status messages for your users is a concern.
+A workaround for this is to run the following command before you call `processCommand()`: `node_faker.waitWhenParsingTxs = true;` -- this makes it so that the `getblock` method occasionally waits a millisecond between processing some transactions, to let the status thread "catch up," which might be helpful if you are displaying status messages for your users. So consider running that command before you call the `processCommand()` method if displaying status messages for your users is a concern.
 
 # Instructions for the desktop version
 - Get nodejs
