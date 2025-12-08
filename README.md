@@ -117,7 +117,7 @@ For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a 
 
 For getchaintxstats, these additional caveats apply: the two optional parameters ( nblocks and blockhash ) are ignored, as the parts of this function that I am currently interested in emulating are unaffected by them
 
-For scantxoutset, these additional caveats apply: you can only run the "start" command, the others are not supported; the txouts field is always unknown; and unlike bitcoind, which lets you pass many different kinds of search paramaters to this command, this implementation only allows one search parameter and it must be a single bitcoin address formatted exactly as in the following example: \'\[\"addr(bc1qw4c8qlskzhj0zhlj5z6yww5gg27kgzhnf7c5yq)\"\]\' -- and note that all four quotation marks, ' and " and " and ', must appear in exactly the same order as they are in that example -- only the address itself may change
+For scantxoutset, these additional caveats apply: you can only run the "start" command, the others are not supported; the txouts field is always unknown; and unlike bitcoind, which lets you pass many different kinds of search paramaters to this command, this implementation only allows one search parameter and it must be a single bitcoin address formatted exactly as in the following example: `'["addr(bc1qw4c8qlskzhj0zhlj5z6yww5gg27kgzhnf7c5yq)"]'` -- and note that all four quotation marks, `'` and `"` and `"` and `'`, must appear in exactly the same order as they are in that example -- only the address itself may change
 
 For getindexinfo, these additional caveats apply: any parameters are ignored, as I only partially implemented this function to make my nodejs app work with Bitcoin RPC Explorer (and it still doesn't work yet anyway)
 
