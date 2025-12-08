@@ -293,7 +293,6 @@ var node_faker = {
     processCommand: async command => {
         if ( !node_faker.electrum_server || !node_faker.esplora_server ) node_faker.init();
         var loop = async () => {
-            console.log( 'waiting til available' );
             if ( !node_faker.in_use ) return;
             await node_faker.waitSomeTime( 10 );
             return loop();
