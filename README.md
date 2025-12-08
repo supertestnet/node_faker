@@ -83,6 +83,7 @@ Also, the app only supports some bitcoin-cli commands for now; namely, these one
 
 === Partially emulated for compatibility ===
 - getchaintxstats
+- scantxoutset "start" ( address in this format: '["addr(bc1qw4c8qlskzhj0zhlj5z6yww5gg27kgzhnf7c5yq)"]' )
 - getindexinfo
 - getmininginfo
 - getnettotals
@@ -115,6 +116,8 @@ For sendrawtransaction, these additional caveats apply: if the ( allowhighfees )
 For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a second parameter ("estimate_mode") just adds 3 blocks to whatever conf_target you passed, rather than doing the complicated evaluations done by bitcoind; and if you pass a value for this parameter other than the word economical, it is ignored, because the only two other valid values I'm aware of are conservative, which is the default, and unset, which is treated the same as conservative
 
 For getchaintxstats, these additional caveats apply: the two optional parameters ( nblocks and blockhash ) are ignored, as the parts of this function that I am currently interested in emulating are unaffected by them
+
+For scantxoutset, these additional caveats apply: you can only run the "start" command, the others are not supported; the txouts field is always unknown; and unlike bitcoind, which lets you pass many different kinds of search paramaters to this command, this implementation only allows one search parameter and it must be a single bitcoin address formatted exactly as in the following example: \'\[\"addr(bc1qw4c8qlskzhj0zhlj5z6yww5gg27kgzhnf7c5yq)\"\]\' -- and note that all four quotation marks, ' and " and " and ', must appear in exactly the same order as they are in that example -- only the address itself may change
 
 For getindexinfo, these additional caveats apply: any parameters are ignored, as I only partially implemented this function to make my nodejs app work with Bitcoin RPC Explorer (and it still doesn't work yet anyway)
 
