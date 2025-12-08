@@ -15,19 +15,18 @@ For two main reasons. One is that when working on some of my other projects I oc
 Also, I used to use a project called [spruned](https://github.com/gdassori/spruned), which I think means "super pruned." It tried to emulate bitcoind's json api, except instead of storing the blockchain on disk, it requested block data and transaction data on-the-fly from bitcoin nodes and electrum nodes. This allowed it to support software like lnd, cln, btc-rpc-explorer, and even bitcoin-cli, by simply "pretending" to be a bitcoin node. It was actually (mostly) just an electrum client, but software that *interacted* with it couldn't tell the difference, because it gave the same responses a real bitcoin node would. I think that's very cool, but it no longer seems to work for me, and I figured I could (mostly) recreate it in the browser. So I did.
 
 # Instructions for using the api
-The app has one dependency, which is tapscript.js. Install tapscript.js and node_faker.js in your webapp like this:
+The app has two dependencies, websockets and tapscript.js. Install tapscript.js and node_faker.js in your webapp like this:
 
 ```html
 <script src="https://unpkg.com/@cmdcode/tapscript@latest"></script>
 <script src="https://supertestnet.github.io/node_faker/node_faker.js"></script>
 ```
 
-You can also install tapscript in a nodejs app like this: `npm i @cmdcode/tapscript` -- but there is no similar one-liner for deploying node_faker.js in a nodejs app because I don't know how to package things for package managers. You can just copy/paste the full text of node_faker.js into your nodejs app, though.
+It is not necessary to install websockets in a webapp because all modern browsers have it built in. You can install websockets and tapscript in a nodejs app like this: `npm i ws @cmdcode/tapscript` -- but there is no similar one-liner for deploying node_faker.js in a nodejs app because I don't know how to package things for package managers. You can just copy/paste the full text of node_faker.js into your nodejs app, though.
 
 Once you've got it all installed, the api is very easy:
 ```javascript
 (async()=>{
-    node_faker.init();
     var result = await node_faker.processCommand( 'getblockhash 500000' );
     console.log( result );
 })();
@@ -38,7 +37,7 @@ The `processCommand()` method accepts any of the supported commands listed below
 
 Since this app is often slow to return results, users might get impatient waiting for a command to return. Status messages can help here; hence there is a helper tool at node_faker.status which gives status updates while your request is processing, and you might want to display those status updates to your users. But *one* method in this app -- `getblock` -- doesn't always post status messages correctly when it is processing lots of transactions, due to threading issues.
 
-A workaround for this is to run the following command right around the time you call `init()`: `node_faker.waitWhenParsingTxs = true;` -- this makes it so that the `getblock` method occasionally waits a millisecond between processing some transactions, to let the status thread "catch up," which might be helpful if you are displaying status messages for your users. So consider running that command when you call the `init()` method if displaying status messages for your users is a concern.
+A workaround for this is to run the following command before you call `processCommand()`: `node_faker.waitWhenParsingTxs = true;` -- this makes it so that the `getblock` method occasionally waits a millisecond between processing some transactions, to let the status thread "catch up," which might be helpful if you are displaying status messages for your users. So consider running that command when you call the `init()` method if displaying status messages for your users is a concern.
 
 # Instructions for the desktop version
 - Get nodejs
