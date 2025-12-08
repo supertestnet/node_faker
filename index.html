@@ -116,9 +116,12 @@
             }
             $( '.submit_command_btn' ).onclick = async () => {
                 var command = $( '.command' ).value;
-                node_faker.status = "loading...";
+                node_faker.status = {
+                    command,
+                    message: "loading...",
+                }
                 var loop = async () => {
-                    $( '.response' ).innerText = node_faker.status;
+                    $( '.response' ).innerText = node_faker.status.message;
                     await node_faker.waitSomeTime( 1000 );
                     if ( node_faker.status ) loop();
                 }
