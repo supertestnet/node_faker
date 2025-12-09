@@ -121,7 +121,7 @@ For scantxoutset, these additional caveats apply: you can only run the "start" c
 
 For getindexinfo, these additional caveats apply: any parameters are ignored, as I only partially implemented this function to make my nodejs app work with Bitcoin RPC Explorer (and it still doesn't work yet anyway)
 
-For getpeerinfo, these additional caveats apply: it always tries to randomly select 5 nodes from Peter Todd's DNS seed list and then pretends it's had a connection with each one for the last 2 hours (12 blocks); also, to get each peer's subversion, I look up the node on bitnodes.io, but they have CORS restrictions which break this in the browser, so I use a proxy called corsproxy.io; and they have rate limits in place which often make this function hang, and never return anything
+For getpeerinfo, these additional caveats apply: it always tries to randomly select 5 nodes from Peter Todd's DNS seed list and then pretends it's had a connection with each one for the last 2 hours (12 blocks); also, to get each peer's subversion, I look up the node on bitnodes.io, so if their website stops working or they change their CORS policy, this function may break
 
 For getnetworkinfo, these additional caveats apply: connections are always 5 and "warnings" is always an array containing one value that just says node faker is emulating bitcoind and has incomplete data
 
