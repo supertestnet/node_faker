@@ -892,6 +892,7 @@ var node_faker = {
                                 return new Promise( async resolve => {
                                     console.log( 5 );
                                     var peer_data = await fetch( `https://bitnodes.io/api/v1/nodes/${ip}-${port}/` );
+                                    if ( !peer_data.ok ) throw( 'no good' );
                                     console.log( 6 );
                                     var peer_json = await peer_data.json();
                                     console.log( 7 );
