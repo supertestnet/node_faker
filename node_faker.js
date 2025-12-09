@@ -881,20 +881,13 @@ var node_faker = {
                         peers_tried.push( peer_to_try );
                         try {
                             var ip = peers_json.Answer[ peer_to_try ].data;
+                            if ( ip.contains( ".onion" ) ) throw ( 'no good' );
                             var port = ip.includes( ":" ) ? Number( ip.substring( 0, ip.indexOf( ":" ) + 1 ) ) : 8333;
                             var checkPeer = async ( ip, port ) => {
                                 return new Promise( async resolve => {
-                                    var peer_data = await fetch("https://corsproxy.io/?https://bitnodes.io/api/v1/checknode/", {
-                                        "headers": {
-                                            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-                                        },
-                                        "referrer": window.location.href,
-                                        "body": `address=${ip}&port=${port}`,
-                                        "method": "POST",
-                                        "mode": "cors",
-                                    });
+                                    var peer_data = await fetch( `https://bitnodes.io/api/v1/nodes/${ip}-${port}/` );
                                     var peer_json = await peer_data.json();
-                                    if ( peer_json.hasOwnProperty( "user_agent" ) ) resolve( peer_json[ "user_agent" ] );
+                                    if ( peer_json.hasOwnProperty( "data" ) ) resolve( peer_json.data[ 1 ] );
                                 });
                             }
                             var peer_is_good = await checkPeer( ip, port );
