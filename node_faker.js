@@ -880,14 +880,23 @@ var node_faker = {
                         var peer_to_try = loop();
                         peers_tried.push( peer_to_try );
                         try {
+                            console.log( 0 );
                             var ip = peers_json.Answer[ peer_to_try ].data;
+                            console.log( 1 );
                             if ( ip.contains( ".onion" ) ) throw ( 'no good' );
+                            console.log( 2 );
                             var port = ip.includes( ":" ) ? Number( ip.substring( 0, ip.indexOf( ":" ) + 1 ) ) : 8333;
+                            console.log( 3 );
                             var checkPeer = async ( ip, port ) => {
+                                console.log( 4 );
                                 return new Promise( async resolve => {
+                                    console.log( 5 );
                                     var peer_data = await fetch( `https://bitnodes.io/api/v1/nodes/${ip}-${port}/` );
+                                    console.log( 6 );
                                     var peer_json = await peer_data.json();
+                                    console.log( 7 );
                                     if ( peer_json.hasOwnProperty( "data" ) ) resolve( peer_json.data[ 1 ] );
+                                    console.log( 8 );
                                 });
                             }
                             var peer_is_good = await checkPeer( ip, port );
