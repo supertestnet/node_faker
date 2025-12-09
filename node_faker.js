@@ -883,7 +883,7 @@ var node_faker = {
                             console.log( 0 );
                             var ip = peers_json.Answer[ peer_to_try ].data;
                             console.log( 1 );
-                            if ( ip.contains( ".onion" ) ) throw ( 'no good' );
+                            if ( ip.includes( ".onion" ) ) throw ( 'no good' );
                             console.log( 2 );
                             var port = ip.includes( ":" ) ? Number( ip.substring( 0, ip.indexOf( ":" ) + 1 ) ) : 8333;
                             console.log( 3 );
