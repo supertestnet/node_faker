@@ -85,19 +85,21 @@ var node_faker = {
             socket.send( JSON.stringify( json ) );
         });
     },
-    queryEsploraServer: async ( server, endpoint ) => {
+    queryEsploraServer: async ( server, endpoint, retries = 5 ) => {
         if ( !server || !endpoint ) return 'you forgot to include a server or an endpoint';
-        var loop = async () => {
+        var loop = async retries => {
             var data = null;
             try {
                 data = await fetch( `${server}${endpoint}` );
             } catch ( e ) {}
             if ( data ) return data;
+            retries = retries - 1;
             console.log( 'retrying...' );
             await node_faker.waitSomeTime( 200 );
-            return loop();
+            if ( retries < 1 ) return {error: 'timed out'};
+            return loop( retries );
         }
-        var data = await loop();
+        var data = await loop( retries );
         if ( endpoint.includes( "/block/" ) && endpoint.includes( "/raw" ) ) {
             var blob = await data.blob();
             var block = await node_faker.blobToHex( blob );
