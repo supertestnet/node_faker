@@ -91,7 +91,7 @@ var node_faker = {
             retries = retries - 1;
             console.log( 'retrying...' );
             await node_faker.waitSomeTime( 200 );
-            if ( retries < 1 ) return 'error: timed out';
+            if ( retries < 1 ) return {error: 'timed out'};
             return loop( retries );
         }
         var data = await loop( retries );
