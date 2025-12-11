@@ -110,7 +110,7 @@ var node_faker = {
             return header;
         }
         if ( !data.ok ) return {error: 'query failed'}
-        if ( !data.hasOwnProperty( "then" ) ) return data;
+        if ( typeof data.json === "undefined" ) return data;
         var json = await data.json();
         return json;
     },
