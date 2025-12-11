@@ -109,6 +109,7 @@ var node_faker = {
             var header = await data.text();
             return header;
         }
+        if ( data.hasOwnProperty( "ok" ) && !data.ok ) return {error: 'query failed'}
         if ( !data.hasOwnProperty( "then" ) ) return data;
         var json = await data.json();
         return json;
