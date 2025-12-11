@@ -80,7 +80,7 @@ var node_faker = {
             socket.send( JSON.stringify( json ) );
         });
     },
-        queryEsploraServer: async ( server, endpoint, retries = 5 ) => {
+    queryEsploraServer: async ( server, endpoint, retries = 5 ) => {
         if ( !server || !endpoint ) return 'you forgot to include a server or an endpoint';
         var loop = async retries => {
             var data = null;
