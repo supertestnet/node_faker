@@ -80,7 +80,7 @@ var node_faker = {
             socket.send( JSON.stringify( json ) );
         });
     },
-    queryEsploraServer: async ( server, endpoint, retries = 5 ) => {
+        queryEsploraServer: async ( server, endpoint, retries = 5 ) => {
         if ( !server || !endpoint ) return 'you forgot to include a server or an endpoint';
         var loop = async retries => {
             var data = null;
@@ -91,7 +91,7 @@ var node_faker = {
             retries = retries - 1;
             console.log( 'retrying...' );
             await node_faker.waitSomeTime( 200 );
-            if ( retries < 1 ) return {error: 'timed out'};
+            if ( retries < 1 ) return {ok: true, error: 'timed out'};
             return loop( retries );
         }
         var data = await loop( retries );
@@ -104,7 +104,7 @@ var node_faker = {
             var header = await data.text();
             return header;
         }
-        if ( data.hasOwnProperty( "ok" ) && !data.ok ) return {error: 'query failed'}
+        if ( !data.ok ) return {error: 'query failed'}
         if ( !data.hasOwnProperty( "then" ) ) return data;
         var json = await data.json();
         return json;
