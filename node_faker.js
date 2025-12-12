@@ -8,6 +8,7 @@ var node_faker = {
     esplora_servers: [
         `https://mempool.space/api`,
         `https://mempool.guide/api`,
+        `https://blockstream.info/api`,
     ],
     electrum_servers: [
         `wss://horsey.cryptocowboys.net:50004`,
@@ -15,6 +16,7 @@ var node_faker = {
         `wss://bitcoin.grey.pw:50004`,
         `wss://blackie.c3-soft.com:57004`,
         `wss://electrum.jochen-hoenicke.de:50010`,
+        `wss://blockstream.info/electrum-websocket/`,
     ],
     electrum_server: null,
     esplora_server: null,
