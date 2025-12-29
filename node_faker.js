@@ -810,6 +810,10 @@ var node_faker = {
                         returnable = response_from_server.result;
                     }
                 }
+                if ( command === "decoderawtransaction" ) {
+                    var txhex = command_arr[ 1 ];
+                    returnable = await node_faker.convertTxhexToCoreFormat( txhex, false );
+                }
                 if ( command === "estimatefee" ) {
                     var nblocks = Number( command_arr[ 1 ] );
                     if ( !nblocks ) {
