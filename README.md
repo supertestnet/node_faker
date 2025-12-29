@@ -68,6 +68,7 @@ Also, the app only supports some bitcoin-cli commands for now; namely, these one
 === Raw transactions ===
 - getrawtransaction "txid" ( verbose )
 - sendrawtransaction "hexstring"
+- decoderawtransaction "hexstring"
 
 === Util ===
 - estimatefee nblocks
