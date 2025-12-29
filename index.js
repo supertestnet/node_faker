@@ -817,7 +817,7 @@ var node_faker = {
                 }
                 if ( command === "decoderawtransaction" ) {
                     var txhex = command_arr[ 1 ];
-                    returnable = var tx_obj = await node_faker.convertTxhexToCoreFormat( txhex, false );
+                    returnable = await node_faker.convertTxhexToCoreFormat( txhex, false );
                 }
                 if ( command === "estimatefee" ) {
                     var nblocks = Number( command_arr[ 1 ] );
