@@ -102,7 +102,7 @@ For getblock, these additional caveats apply:
 - in scriptSigs, witnesses, and output scripts, bitcoind has an ASM format that I don't perfectly emulate; I use taprootjs's ASM format instead, after applying the "join" operator; this is pretty close to bitcoind's ASM format, but it's not identical
 - in particular, for signatures that have a sigflag appended, bitcoind's format changes the sigflag from its hex value to a corresponding marker such as: `[ALL],` whereas taprootjs just keeps the hex value, e.g. `01`
 - when displaying the value of a utxo, bitcoind uses a number format that allows for trailing zeroes; thus it might look like this: `"value": 0.21000000,` – whereas my format does not display trailing zeroes; e.g. my format would display that like this: `"value": 0.21,`
-- in outputs, my format makes no attempt to replicate the descriptor, and for everything it says `"desc": "unknown",`
+- in outputs, my format makes no attempt to replicate the descriptor, and every time it says `"desc": "unknown",`
 - four of the output types supported by bitcoind (i.e. pubkey, multisig, witness_unknown, and nonstandard) do not get their output type displayed properly in my format; instead I just say `"type": "unknown",` for those, and only support the seven most common ones, namely, pubkeyhash, scripthash, witness_v0_keyhash, witness_v0_scripthash, witness_v1_taproot, anchor, and nulldata
 - the "difficulty" number does not match the difficulty number provided by bitcoind, and I don't know why
 
@@ -113,6 +113,13 @@ For getblockheader, these additional caveats apply: chainwork is always a set of
 For getrawtransaction, these additional caveats apply: if a blockhash is passed as a third parameter, it is always ignored, because it doesn't affect the output anyway (it's just meant to make bitcoind more efficient) and electrum servers don't seem to have an endpoint for passing that parameter to them anyway; also, prevout objects and txfee data are always omitted from the transaction and its inputs, even if verbosity is set higher than 1, because bitcoind omits them too whenever "block undo data" is not available, and as mentioned previously, I don't know what that is, but I can see I'm allowed to omit it (because bitcoind sometimes omits it) so I'm just always omitting it
 
 For sendrawtransaction, these additional caveats apply: if the ( allowhighfees ) parameter is passed, it is ignored because electrum servers don't have an endpoint for passing this parameter
+
+For decoderawtransaction, these additional caveats apply:
+- in scriptSigs, witnesses, and output scripts, bitcoind has an ASM format that I don't perfectly emulate; I use taprootjs's ASM format instead, after applying the "join" operator; this is pretty close to bitcoind's ASM format, but it's not identical
+- in particular, for signatures that have a sigflag appended, bitcoind's format changes the sigflag from its hex value to a corresponding marker such as: `[ALL],` whereas taprootjs just keeps the hex value, e.g. `01`
+- when displaying the value of a utxo, bitcoind uses a number format that allows for trailing zeroes; thus it might look like this: `"value": 0.21000000,` – whereas my format does not display trailing zeroes; e.g. my format would display that like this: `"value": 0.21,`
+- in outputs, my format makes no attempt to replicate the descriptor, and every time it says `"desc": "unknown",`
+- four of the output types supported by bitcoind (i.e. pubkey, multisig, witness_unknown, and nonstandard) do not get their output type displayed properly in my format; instead I just say `"type": "unknown",` for those, and only support the seven most common ones, namely, pubkeyhash, scripthash, witness_v0_keyhash, witness_v0_scripthash, witness_v1_taproot, anchor, and nulldata
 
 For estimatesmartfee, these additional caveats apply: passing "ECONOMICAL" as a second parameter ("estimate_mode") just adds 3 blocks to whatever conf_target you passed, rather than doing the complicated evaluations done by bitcoind; and if you pass a value for this parameter other than the word economical, it is ignored, because the only two other valid values I'm aware of are conservative, which is the default, and unset, which is treated the same as conservative
 
