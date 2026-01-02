@@ -16,7 +16,7 @@ var node_faker = {
         `https://blockstream.info/api`,
     ],
     electrum_servers: [
-        `wss://horsey.cryptocowboys.net:50004`,
+        // `wss://horsey.cryptocowboys.net:50004`,
         `wss://btc.electroncash.dk:60004`,
         `wss://bitcoin.grey.pw:50004`,
         `wss://blackie.c3-soft.com:57004`,
