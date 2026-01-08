@@ -22,6 +22,7 @@ var node_faker = {
         `wss://blackie.c3-soft.com:57004`,
         `wss://electrum.jochen-hoenicke.de:50010`,
         `wss://blockstream.info/electrum-websocket/`,
+        `wss://mempool.guide/electrum-websocket`,
     ],
     electrum_server: null,
     esplora_server: null,
