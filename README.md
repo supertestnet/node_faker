@@ -9,6 +9,9 @@ Just click here and follow the instructions: https://supertestnet.github.io/node
 
 To use the API or the desktop version, see instructions further below.
 
+# Video explainer
+[![](https://supertestnet.github.io/wild_explorer/node_faker_and_wild_explorer.png)](https://www.youtube.com/watch?v=QAc4L7tSZMs)
+
 # Why did you make this?
 For two main reasons. One is that when working on some of my other projects I occasionally look for a way to interact with bitcoind programatically in the browser, but I find it hard to keep a node running; I run all my nodes on my laptop, which is usually turned off, so when I start them up, they have a lot of syncing to do, which makes me wait before doing whatever it is I wanted to do. This tool lets me emulate a fully synced node and test my apps against that, with confidence that my apps might not need much modification to work with "real" bitcoin nodes.
 
