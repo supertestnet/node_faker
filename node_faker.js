@@ -18,6 +18,7 @@ var node_faker = {
         `wss://electrum.jochen-hoenicke.de:50010`,
         `wss://blockstream.info/electrum-websocket/`,
         `wss://mempool.guide/electrum-websocket/`,
+        `wss://electrum.coinos.io`,
     ],
     electrum_server: null,
     esplora_server: null,
