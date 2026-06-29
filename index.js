@@ -344,7 +344,7 @@ var node_faker = {
                     var exponent = parseInt( nbits.substring( 0, 2 ), 16 );
                     var exponent_minus_three = exponent - 3;
                     var exponent_as_length = ( exponent_minus_three * 2 );
-                    var current_target = nbits.substring( 2 ).padEnd( exponent_as_length, "0" ).padStart( 64, "0" );
+                    var current_target = nbits.substring( 2 ).padEnd( exponent_as_length + 6, "0" ).padStart( 64, "0" );
                     var max_difficulty = "00000000FFFF0000000000000000000000000000000000000000000000000000";
                     var difficulty = Number( BigInt( `0x${max_difficulty}` ) / BigInt( `0x${current_target}` ) );
 
@@ -489,7 +489,7 @@ var node_faker = {
                         var exponent = parseInt( nbits.substring( 0, 2 ), 16 );
                         var exponent_minus_three = exponent - 3;
                         var exponent_as_length = ( exponent_minus_three * 2 );
-                        var current_target = nbits.substring( 2 ).padEnd( exponent_as_length, "0" ).padStart( 64, "0" );
+                        var current_target = nbits.substring( 2 ).padEnd( exponent_as_length + 6, "0" ).padStart( 64, "0" );
                         var max_difficulty = "00000000FFFF0000000000000000000000000000000000000000000000000000";
                         var difficulty = Number( BigInt( `0x${max_difficulty}` ) / BigInt( `0x${current_target}` ) );
 
@@ -696,7 +696,7 @@ var node_faker = {
                         var exponent = parseInt( nbits.substring( 0, 2 ), 16 );
                         var exponent_minus_three = exponent - 3;
                         var exponent_as_length = ( exponent_minus_three * 2 );
-                        var current_target = nbits.substring( 2 ).padEnd( exponent_as_length, "0" ).padStart( 64, "0" );
+                        var current_target = nbits.substring( 2 ).padEnd( exponent_as_length + 6, "0" ).padStart( 64, "0" );
                         var max_difficulty = "00000000FFFF0000000000000000000000000000000000000000000000000000";
                         var difficulty = Number( BigInt( `0x${max_difficulty}` ) / BigInt( `0x${current_target}` ) );
 
